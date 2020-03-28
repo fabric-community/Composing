@@ -13,11 +13,11 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.cottonmc.starter.FabricStarter"
+      "io.teamblue.composing.Composing"
     ]
   },
   "mixins": [
-    "mixins.starter.json"
+    "mixins.composing.json"
   ],
   "depends": {
     "fabricloader": ">=0.4.0"
