@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "id": "starter",
+  "id": "composing",
   "version": "${version}",
 
-  "name": "Fabric Starter",
-  "icon": "assets/starter/icon.png",
-  "description": "Template for starting out Fabric mods",
+  "name": "Composing",
+  "icon": "assets/composing/icon.png",
+  "description": "Equippable gems for tools and armor",
   "license": "MIT",
   "contact": {
-    "sources": "https://github.com/CottonMC/FabricStarter"
+    "sources": "https://github.com/fabric-community/Composing"
   },
   "environment": "*",
   "entrypoints": {
