@@ -1,6 +1,9 @@
 package io.teamblue.composing;
 
 import net.fabricmc.api.ModInitializer;
+
+import io.teamblue.composing.item.ComposingItems;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,6 +13,6 @@ public class Composing implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
+		ComposingItems.init();
 	}
 }

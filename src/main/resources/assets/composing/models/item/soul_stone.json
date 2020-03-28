@@ -1,0 +1,6 @@
+{
+	"parent": "composing:item/stone_base",
+	"textures": {
+		"0": "composing:item/soul_stone"
+	}
+}
