@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "composing:item/medium_air_crystal"
+		"layer0": "composing:item/small_wind_crystal"
 	}
 }
