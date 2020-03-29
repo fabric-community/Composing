@@ -1,5 +1,6 @@
 package io.teamblue.composing;
 
+import io.teamblue.composing.blockentity.ComposingTableBlockEntity;
 import net.fabricmc.api.ModInitializer;
 
 import dev.emi.trinkets.api.ITrinket;
@@ -10,6 +11,8 @@ import io.teamblue.composing.item.ComposingItems;
 
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -19,6 +22,7 @@ import net.minecraft.util.Identifier;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.ItemComponentCallback;
+import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,6 +32,14 @@ public class Composing implements ModInitializer {
 	public static final ItemGroup ITEMGROUP = FabricItemGroupBuilder.build(new Identifier(Composing.MODID, "tab"), () -> new ItemStack(ComposingItems.BLESSING_STONE));
 
 	public static final ComponentType<CrystalSlotComponent> CRYSTAL_SLOT_COMPONENT = ComponentRegistry.INSTANCE.registerIfAbsent(new Identifier(MODID, "crystal_slot"), CrystalSlotComponent.class);
+
+	public static final Block COMPOSING_TABLE = null;
+
+	public static final BlockEntityType<ComposingTableBlockEntity> COMPOSING_TABLE_BLOCK_ENTITY_TYPE = Registry.register(
+			Registry.BLOCK_ENTITY_TYPE,
+			new Identifier(Composing.MODID, "table_type"),
+			BlockEntityType.Builder.create(ComposingTableBlockEntity::new, COMPOSING_TABLE).build(null)
+	);
 
 	@Override
 	public void onInitialize() {
