@@ -13,5 +13,6 @@
 	"item.composing.large_air_crystal": "Large Air Crystal",
 	"item.composing.blessing_stone": "Stone of Blessing",
 	"item.composing.soul_stone": "Stone of Soul",
-	"item.composing.holy_stone": "Stone of Holy"
+	"item.composing.holy_stone": "Stone of Holy",
+	"itemGroup.composing.tab": "Composing"
 }
