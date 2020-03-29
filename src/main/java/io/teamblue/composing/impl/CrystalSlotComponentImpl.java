@@ -1,5 +1,6 @@
 package io.teamblue.composing.impl;
 
+import io.teamblue.composing.Composing;
 import io.teamblue.composing.api.AttributeCrystal;
 import io.teamblue.composing.api.CrystalSlotComponent;
 import io.teamblue.composing.api.SlotType;
@@ -26,6 +27,11 @@ public class CrystalSlotComponentImpl implements CrystalSlotComponent {
 	}
 
 	@Override
+	public SlotType getType() {
+		return type;
+	}
+
+	@Override
 	public void fromTag(CompoundTag compoundTag) {
 
 	}
@@ -42,6 +48,6 @@ public class CrystalSlotComponentImpl implements CrystalSlotComponent {
 
 	@Override
 	public ComponentType<CrystalSlotComponent> getComponentType() {
-		return null;
+		return Composing.CRYSTAL_SLOT_COMPONENT;
 	}
 }
