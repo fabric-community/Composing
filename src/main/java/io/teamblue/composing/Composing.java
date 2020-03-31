@@ -4,9 +4,9 @@ import io.teamblue.composing.blockentity.ComposingTableBlockEntity;
 import net.fabricmc.api.ModInitializer;
 
 import dev.emi.trinkets.api.ITrinket;
-import io.teamblue.composing.api.CrystalSlotComponent;
+import io.teamblue.composing.api.CrystalHolder;
 import io.teamblue.composing.api.SlotType;
-import io.teamblue.composing.impl.CrystalSlotComponentImpl;
+import io.teamblue.composing.impl.CrystalHolderImpl;
 import io.teamblue.composing.item.ComposingItems;
 
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -31,7 +31,7 @@ public class Composing implements ModInitializer {
 	public static final Logger logger = LogManager.getLogger();
 	public static final ItemGroup ITEMGROUP = FabricItemGroupBuilder.build(new Identifier(Composing.MODID, "tab"), () -> new ItemStack(ComposingItems.BLESSING_STONE));
 
-	public static final ComponentType<CrystalSlotComponent> CRYSTAL_SLOT_COMPONENT = ComponentRegistry.INSTANCE.registerIfAbsent(new Identifier(MODID, "crystal_slot"), CrystalSlotComponent.class);
+	public static final ComponentType<CrystalHolder> CRYSTAL_SLOT_COMPONENT = ComponentRegistry.INSTANCE.registerIfAbsent(new Identifier(MODID, "crystal_slot"), CrystalHolder.class);
 
 	public static final Block COMPOSING_TABLE = null;
 
@@ -46,11 +46,11 @@ public class Composing implements ModInitializer {
 		ComposingItems.init();
 		ItemComponentCallback.event(null).register((stack, container) -> {
 			if (stack.getItem() instanceof ToolItem) {
-				container.put(CRYSTAL_SLOT_COMPONENT, new CrystalSlotComponentImpl(SlotType.WEAPON));
+				container.put(CRYSTAL_SLOT_COMPONENT, new CrystalHolderImpl(SlotType.WEAPON));
 			} else if (stack.getItem() instanceof ArmorItem) {
-				container.put(CRYSTAL_SLOT_COMPONENT, new CrystalSlotComponentImpl(SlotType.ARMOR));
+				container.put(CRYSTAL_SLOT_COMPONENT, new CrystalHolderImpl(SlotType.ARMOR));
 			} else if (stack.getItem() instanceof ITrinket) {
-				container.put(CRYSTAL_SLOT_COMPONENT, new CrystalSlotComponentImpl(SlotType.ACCESSORY));
+				container.put(CRYSTAL_SLOT_COMPONENT, new CrystalHolderImpl(SlotType.ACCESSORY));
 			}
 		});
 	}
