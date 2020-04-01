@@ -25,8 +25,9 @@ public class ComposingTableBlockEntity extends BlockEntity {
     private ItemStack tool;
 
     private Random rand = new Random();
+
+    // Fields so we dont have to pass them around
     private int crystalLevel;
-    private int stoneLevel;
     private Set<Item> uniqueCrystals;
     private Set<Item> uniqueStones;
 
@@ -38,7 +39,7 @@ public class ComposingTableBlockEntity extends BlockEntity {
         crystalLevel = -1;
         int crystalCount = 0;
         uniqueCrystals = new HashSet<>();
-        stoneLevel = -1;
+        int stoneLevel = -1;
         int stoneCount = 0;
         uniqueStones = new HashSet<>();
 
@@ -111,8 +112,11 @@ public class ComposingTableBlockEntity extends BlockEntity {
     // - If invalid, return null
     // - If valid, return modifier matching crystals
     private Pair<String, EntityAttributeModifier> getTargetModifier(FusionTarget target) {
+        // Size 1: 1 crystal type
+        // Size 2: 2 crystal types
         List<CrystalItem> crystals = uniqueCrystals.stream().map(i -> (CrystalItem)i).collect(Collectors.toList());
 
+        // Crystals to check for
         CrystalItem earth = new CrystalItem[] { ComposingItems.SMALL_EARTH_CRYSTAL, ComposingItems.MEDIUM_EARTH_CRYSTAL, ComposingItems.LARGE_EARTH_CRYSTAL }[crystalLevel];
         CrystalItem water = new CrystalItem[] { ComposingItems.SMALL_WATER_CRYSTAL, ComposingItems.MEDIUM_WATER_CRYSTAL, ComposingItems.LARGE_WATER_CRYSTAL }[crystalLevel];
         CrystalItem wind = new CrystalItem[] { ComposingItems.SMALL_WIND_CRYSTAL, ComposingItems.MEDIUM_WIND_CRYSTAL, ComposingItems.LARGE_WIND_CRYSTAL }[crystalLevel];
