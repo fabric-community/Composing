@@ -1,19 +1,22 @@
 package io.teamblue.composing.blockentity;
 
+import com.mojang.datafixers.util.Pair;
+import dev.emi.trinkets.api.ITrinket;
 import io.teamblue.composing.Composing;
 import io.teamblue.composing.item.ComposingItems;
 import io.teamblue.composing.item.CrystalItem;
 import io.teamblue.composing.item.StoneItem;
+import io.teamblue.composing.util.fusion.EntityAttributeModifiers;
 import io.teamblue.composing.util.fusion.FusionTarget;
 import io.teamblue.composing.util.fusion.FusionType;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.item.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ComposingTableBlockEntity extends BlockEntity {
     private Item slot1;
@@ -22,18 +25,22 @@ public class ComposingTableBlockEntity extends BlockEntity {
     private ItemStack tool;
 
     private Random rand = new Random();
+    private int crystalLevel;
+    private int stoneLevel;
+    private Set<Item> uniqueCrystals;
+    private Set<Item> uniqueStones;
 
     public ComposingTableBlockEntity() {
         super(Composing.COMPOSING_TABLE_BLOCK_ENTITY_TYPE);
     }
 
     private FusionTarget getFusionTarget() {
-        int crystalLevel = -1;
+        crystalLevel = -1;
         int crystalCount = 0;
-        Set<Item> uniqueCrystals = new HashSet<>();
-        int stoneLevel = -1;
+        uniqueCrystals = new HashSet<>();
+        stoneLevel = -1;
         int stoneCount = 0;
-        Set<Item> uniqueStones = new HashSet<>();
+        uniqueStones = new HashSet<>();
 
         for (Item it : new Item[] { slot1, slot2, slot3 }) {
             if (it instanceof CrystalItem) {
@@ -103,7 +110,36 @@ public class ComposingTableBlockEntity extends BlockEntity {
     // - Get available modifiers for item
     // - If invalid, return null
     // - If valid, return modifier matching crystals
-    private EntityAttributeModifier getTargetModifier() {
+    private Pair<String, EntityAttributeModifier> getTargetModifier(FusionTarget target) {
+        List<CrystalItem> crystals = uniqueCrystals.stream().map(i -> (CrystalItem)i).collect(Collectors.toList());
+
+        CrystalItem earth = new CrystalItem[] { ComposingItems.SMALL_EARTH_CRYSTAL, ComposingItems.MEDIUM_EARTH_CRYSTAL, ComposingItems.LARGE_EARTH_CRYSTAL }[crystalLevel];
+        CrystalItem water = new CrystalItem[] { ComposingItems.SMALL_WATER_CRYSTAL, ComposingItems.MEDIUM_WATER_CRYSTAL, ComposingItems.LARGE_WATER_CRYSTAL }[crystalLevel];
+        CrystalItem wind = new CrystalItem[] { ComposingItems.SMALL_WIND_CRYSTAL, ComposingItems.MEDIUM_WIND_CRYSTAL, ComposingItems.LARGE_WIND_CRYSTAL }[crystalLevel];
+        CrystalItem fire = new CrystalItem[] { ComposingItems.SMALL_FIRE_CRYSTAL, ComposingItems.MEDIUM_FIRE_CRYSTAL, ComposingItems.LARGE_FIRE_CRYSTAL }[crystalLevel];
+
+        if (tool != null && !tool.isEmpty()) {
+            Item item = tool.getItem();
+            if (item instanceof ArmorItem) {
+                // Armor modifiers
+            } else if (item instanceof SwordItem || item instanceof RangedWeaponItem || item instanceof TridentItem) {
+                // Weapon modifiers
+                if (crystals.contains(earth) && crystals.contains(fire)) {
+                    // Attack bonus
+                    return new Pair<>(
+                            EntityAttributes.ATTACK_DAMAGE.getId(),
+                            new EntityAttributeModifier(
+                                    EntityAttributeModifiers.WEAPON_DAMAGE,
+                                    "Weapon Damage",
+                                    target.getLevel()+1,  // 1-4
+                                    EntityAttributeModifier.Operation.ADDITION));
+                }
+            } else if (item instanceof ToolItem) {
+                // Tool modifiers
+            } else if (item instanceof ITrinket) {
+                // Trinket modifiers
+            }
+        }
         return null;
     }
 
@@ -113,15 +149,11 @@ public class ComposingTableBlockEntity extends BlockEntity {
 
             case UPGRADE_CRYSTAL:
                 // All crystals the same?
-                Set<CrystalItem> items = new HashSet<>();
-                for (Item i : new Item[] { slot1, slot2, slot3 }) {
-                    if (i != null) {
-                        items.add((CrystalItem)i);
-                    }
-                }
-                
+                Set<CrystalItem> items = uniqueCrystals.stream().map(i -> (CrystalItem)i).collect(Collectors.toSet());
+
                 if (items.size() == 1) {
                     CrystalItem crystalItem = items.stream().findFirst().get();
+
                     if (ComposingItems.SMALL_EARTH_CRYSTAL.equals(crystalItem)) {
                         return ComposingItems.MEDIUM_EARTH_CRYSTAL;
                     } else if (ComposingItems.SMALL_WATER_CRYSTAL.equals(crystalItem)) {
@@ -164,7 +196,7 @@ public class ComposingTableBlockEntity extends BlockEntity {
                 }
                 
             case UPGRADE_STONE:
-                StoneItem stone = (StoneItem) Arrays.stream(new Item[] { slot1, slot2, slot3 }).findFirst().get();
+                StoneItem stone = uniqueStones.stream().filter(i -> i instanceof StoneItem).map(i -> (StoneItem)i).findFirst().get();
                 if (stone == ComposingItems.BLESSING_STONE) {
                     return ComposingItems.SOUL_STONE;
                 } else if (stone == ComposingItems.SOUL_STONE) {
@@ -184,11 +216,11 @@ public class ComposingTableBlockEntity extends BlockEntity {
                 ItemStack stackToSpawn;
 
                 if (target.getType() == FusionType.UPGRADE_TOOL) {
-                    EntityAttributeModifier modifier = getTargetModifier();
+                    Pair<String, EntityAttributeModifier> modifier = getTargetModifier(target);
                     if (modifier == null) {
                         return;
                     }
-                    tool.addAttributeModifier(modifier.getName(), modifier, null);
+                    tool.addAttributeModifier(modifier.getFirst(), modifier.getSecond(), null);
                     stackToSpawn = tool;
                     tool = null;
                 } else if (target.getType() == FusionType.UPGRADE_CRYSTAL || target.getType() == FusionType.UPGRADE_STONE) {
