@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_top",
+  "textures": {
+    "side": "composing:block/composer_placeholder_side",
+    "top": "composing:block/composer_placeholder"
+  }
+}

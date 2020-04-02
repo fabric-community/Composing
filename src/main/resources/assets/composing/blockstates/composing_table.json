@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "composing:block/composing_table" }
+  }
+}
