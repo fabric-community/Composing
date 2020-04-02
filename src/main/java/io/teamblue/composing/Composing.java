@@ -1,5 +1,6 @@
 package io.teamblue.composing;
 
+import io.teamblue.composing.block.ComposingBlocks;
 import io.teamblue.composing.blockentity.ComposingTableBlockEntity;
 import net.fabricmc.api.ModInitializer;
 
@@ -33,12 +34,10 @@ public class Composing implements ModInitializer {
 
 	public static final ComponentType<CrystalHolder> CRYSTAL_SLOT_COMPONENT = ComponentRegistry.INSTANCE.registerIfAbsent(new Identifier(MODID, "crystal_slot"), CrystalHolder.class);
 
-	public static final Block COMPOSING_TABLE = null;
-
 	public static final BlockEntityType<ComposingTableBlockEntity> COMPOSING_TABLE_BLOCK_ENTITY_TYPE = Registry.register(
 			Registry.BLOCK_ENTITY_TYPE,
 			new Identifier(Composing.MODID, "table_type"),
-			BlockEntityType.Builder.create(ComposingTableBlockEntity::new, COMPOSING_TABLE).build(null)
+			BlockEntityType.Builder.create(ComposingTableBlockEntity::new, ComposingBlocks.COMPOSING_TABLE).build(null)
 	);
 
 	@Override

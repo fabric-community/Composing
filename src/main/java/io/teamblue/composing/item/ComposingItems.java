@@ -1,6 +1,8 @@
 package io.teamblue.composing.item;
 
+import io.teamblue.composing.block.ComposingBlocks;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -31,6 +33,8 @@ public class ComposingItems {
 	public static final StoneItem BLESSING_STONE = register(new StoneItem(new Item.Settings().group(Composing.ITEMGROUP), 0), "blessing_stone");
 	public static final StoneItem SOUL_STONE = register(new StoneItem(new Item.Settings().group(Composing.ITEMGROUP), 0), "soul_stone");
 	public static final StoneItem HOLY_STONE = register(new StoneItem(new Item.Settings().group(Composing.ITEMGROUP), 0), "holy_stone");
+
+	public static final BlockItem COMPOSING_TABLE = register(new BlockItem(ComposingBlocks.COMPOSING_TABLE, new Item.Settings().group(Composing.ITEMGROUP)), "composing_table");
 	
 	private static <T extends Item> T register(T item, String id) {
 		return Registry.register(Registry.ITEM, new Identifier(Composing.MODID, id), item);

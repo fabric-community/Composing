@@ -19,10 +19,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ComposingTableBlockEntity extends BlockEntity {
-    private Item slot1;
-    private Item slot2;
-    private Item slot3;
-    private ItemStack tool;
+    public Item slot1;
+    public Item slot2;
+    public Item slot3;
+    public ItemStack tool;
 
     private Random rand = new Random();
 
