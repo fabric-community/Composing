@@ -1,0 +1,11 @@
+{
+  "name": "Items",
+  "icon": "composing:soul_stone",
+  "category": "basics",
+  "pages": [
+    {
+      "type": "text",
+      "text": "All composing materials can be dropped by any hostile entity."
+    }
+  ]
+}

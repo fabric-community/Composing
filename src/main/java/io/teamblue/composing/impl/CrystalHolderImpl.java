@@ -9,6 +9,8 @@ import nerdhub.cardinal.components.api.component.Component;
 
 import net.minecraft.nbt.CompoundTag;
 
+import net.fabricmc.fabric.api.util.NbtType;
+
 public class CrystalHolderImpl implements CrystalHolder {
 	private SlotType type;
 	private int level;
@@ -40,13 +42,18 @@ public class CrystalHolderImpl implements CrystalHolder {
 	}
 
 	@Override
-	public void fromTag(CompoundTag compoundTag) {
-
+	public void fromTag(CompoundTag tag) {
+		this.level = tag.getInt("Level");
+		if (tag.contains("Primary", NbtType.STRING)) this.primary = CrystalElement.forName(tag.getString("Primary"));
+		if (tag.contains("Primary", NbtType.STRING)) this.secondary = CrystalElement.forName(tag.getString("Secondary"));
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag compoundTag) {
-		return null;
+	public CompoundTag toTag(CompoundTag tag) {
+		tag.putInt("Level", level);
+		if (primary != null) tag.putString("Primary", primary.asString());
+		if (secondary != null) tag.putString("Secondary", secondary.asString());
+		return tag;
 	}
 
 	@Override

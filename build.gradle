@@ -39,6 +39,11 @@ dependencies {
 	modApi "com.github.NerdHubMC.Cardinal-Components-API:cardinal-components-base:${project.cardinal_version}"
 	modApi "com.github.NerdHubMC.Cardinal-Components-API:cardinal-components-item:${project.cardinal_version}"
 	modApi "com.github.emilyploszaj:Trinkets:${project.trinkets_version}"
+
+	include "com.github.Vazkii:Patchouli:${project.patchouli_version}"
+
+	// Only for testing!
+	modRuntime "com.github.Vazkii:Patchouli:${project.patchouli_version}"
 }
 
 processResources {

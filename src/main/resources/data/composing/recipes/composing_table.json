@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "WTE",
+    " F "
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:enchanting_table"
+    },
+    "A": {
+      "item": "composing:small_wind_crystal"
+    },
+    "W": {
+      "item": "composing:small_water_crystal"
+    },
+    "E": {
+      "item": "composing:small_earth_crystal"
+    },
+    "F": {
+      "item": "composing:small_fire_crystal"
+    }
+  },
+  "result": {
+    "item": "composing:composing_table"
+  }
+}

@@ -15,20 +15,21 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.registry.Registry;
 
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+
+
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ComposingTableBlockEntity extends BlockEntity {
+public class ComposingTableBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
     public Item slot1;
     public Item slot2;
     public Item slot3;
-    public ItemStack tool;
+    public ItemStack tool = ItemStack.EMPTY;
 
     private Random rand = new Random();
 
@@ -39,7 +40,6 @@ public class ComposingTableBlockEntity extends BlockEntity {
 
     public ComposingTableBlockEntity() {
         super(Composing.COMPOSING_TABLE_BLOCK_ENTITY_TYPE);
-        this.tool = ItemStack.EMPTY;
     }
 
     private FusionTarget getFusionTarget() {
@@ -278,20 +278,40 @@ public class ComposingTableBlockEntity extends BlockEntity {
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        tag.putString("slot1", slot1 == null ? "minecraft:air" : Registry.ITEM.getId(slot1).toString());
-        tag.putString("slot2", slot2 == null ? "minecraft:air" : Registry.ITEM.getId(slot2).toString());
-        tag.putString("slot3", slot3 == null ? "minecraft:air" : Registry.ITEM.getId(slot3).toString());
-        tag.put("tool", tool.toTag(new CompoundTag()));
-        return tag;
+    	super.toTag(tag);
+    	tag.putString("Slot1", Registry.ITEM.getId(slot1).toString());
+    	tag.putString("Slot2", Registry.ITEM.getId(slot2).toString());
+    	tag.putString("Slot3", Registry.ITEM.getId(slot3).toString());
+    	tag.put("Tool", tool.toTag(new CompoundTag()));
+    	return tag;
     }
 
     @Override
     public void fromTag(CompoundTag tag) {
-        super.fromTag(tag);
-        slot1 = Registry.ITEM.get(new Identifier(tag.getString("slot1")));
-        slot2 = Registry.ITEM.get(new Identifier(tag.getString("slot2")));
-        slot3 = Registry.ITEM.get(new Identifier(tag.getString("slot3")));
-        tool = ItemStack.fromTag(tag.getCompound("tool"));
+    	super.fromTag(tag);
+    	if(tag.contains("Slot1", 8)) {
+    		slot1 = Registry.ITEM.get(new Identifier(tag.getString("Slot1")));
+    	}
+    	if(tag.contains("Slot2", 8)) {
+    		slot2 = Registry.ITEM.get(new Identifier(tag.getString("Slot2")));
+    	}
+    	if(tag.contains("Slot3", 8)) {
+    		slot3 = Registry.ITEM.get(new Identifier(tag.getString("Slot3")));
+    	}
+    	if(tag.contains("Tool", 10)) {
+    		tool = ItemStack.fromTag(tag.getCompound("Tool"));
+    	} else {
+    		tool = ItemStack.EMPTY;
+    	}
     }
+
+	@Override
+	public void fromClientTag(CompoundTag tag) {
+		fromTag(tag);
+	}
+
+	@Override
+	public CompoundTag toClientTag(CompoundTag tag) {
+		return toTag(tag);
+	}
 }
