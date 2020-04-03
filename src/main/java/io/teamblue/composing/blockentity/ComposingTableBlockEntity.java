@@ -27,7 +27,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
     public Item slot1;
     public Item slot2;
     public Item slot3;
-    public ItemStack tool;
+    public ItemStack tool = ItemStack.EMPTY;
 
     private Random rand = new Random();
 
