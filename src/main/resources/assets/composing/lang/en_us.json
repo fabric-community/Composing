@@ -11,8 +11,9 @@
 	"item.composing.small_wind_crystal": "Small Wind Crystal",
 	"item.composing.medium_wind_crystal": "Medium Wind Crystal",
 	"item.composing.large_wind_crystal": "Large Wind Crystal",
-	"item.composing.blessing_stone": "Stone of Blessing",
-	"item.composing.soul_stone": "Stone of Soul",
-	"item.composing.holy_stone": "Stone of Holy",
+	"item.composing.blessing_stone": "Blessing Stone",
+	"item.composing.soul_stone": "Soul Stone",
+	"item.composing.holy_stone": "Holy Stone",
+	"block.composing.composing_table": "Composing Table",
 	"itemGroup.composing.tab": "Composing"
 }
