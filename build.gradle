@@ -41,11 +41,9 @@ dependencies {
 	modApi "com.github.emilyploszaj:Trinkets:${project.trinkets_version}"
 
 	include "com.github.Vazkii:Patchouli:${project.patchouli_version}"
-	include "io.github.cottonmc:LibCD:${project.libcd_version}"
 
 	// Only for testing!
 	modRuntime "com.github.Vazkii:Patchouli:${project.patchouli_version}"
-	modRuntime "io.github.cottonmc:LibCD:${project.libcd_version}"
 }
 
 processResources {

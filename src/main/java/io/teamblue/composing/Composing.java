@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.util.Identifier;
 
+import io.teamblue.composing.recipe.ComposingRecipes;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.ItemComponentCallback;
@@ -43,6 +44,7 @@ public class Composing implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ComposingItems.init();
+		ComposingRecipes.init();
 		ItemComponentCallback.event(null).register((stack, container) -> {
 			if (stack.getItem() instanceof ToolItem) {
 				container.put(CRYSTAL_SLOT_COMPONENT, new CrystalHolderImpl(SlotType.WEAPON));
