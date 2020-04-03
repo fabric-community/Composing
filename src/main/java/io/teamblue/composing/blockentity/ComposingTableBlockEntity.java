@@ -14,6 +14,12 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.util.DefaultedList;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.registry.Registry;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -247,22 +253,45 @@ public class ComposingTableBlockEntity extends BlockEntity {
     }
 
     public void dropItems() {
-        List<ItemEntity> items = new ArrayList<>();
+        List<ItemStack> items = new ArrayList<>();
         if (slot1 != null) {
-            items.add(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(slot1, 1)));
+            items.add(new ItemStack(slot1, 1));
         }
         if (slot2 != null) {
-            items.add(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(slot2, 1)));
+            items.add(new ItemStack(slot2, 1));
         }
         if (slot3 != null) {
-            items.add(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(slot3, 1)));
+            items.add(new ItemStack(slot3, 1));
         }
-        if (tool != null && !tool.isEmpty()) {
-            items.add(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), tool));
+        if (!tool.isEmpty()) {
+            items.add(tool);
         }
 
-        for (ItemEntity item : items) {
-            world.spawnEntity(item);
-        }
+        for (ItemStack stack : items)
+            ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), stack);
+    }
+
+    @Override
+    public CompoundTag toInitialChunkDataTag() {
+        return this.toTag(new CompoundTag());
+    }
+
+    @Override
+    public CompoundTag toTag(CompoundTag tag) {
+        super.toTag(tag);
+        tag.putString("slot1", slot1 == null ? "minecraft:air" : Registry.ITEM.getId(slot1).toString());
+        tag.putString("slot2", slot2 == null ? "minecraft:air" : Registry.ITEM.getId(slot2).toString());
+        tag.putString("slot3", slot3 == null ? "minecraft:air" : Registry.ITEM.getId(slot3).toString());
+        tag.put("tool", tool.toTag(new CompoundTag()));
+        return tag;
+    }
+
+    @Override
+    public void fromTag(CompoundTag tag) {
+        super.fromTag(tag);
+        slot1 = Registry.ITEM.get(new Identifier(tag.getString("slot1")));
+        slot2 = Registry.ITEM.get(new Identifier(tag.getString("slot2")));
+        slot3 = Registry.ITEM.get(new Identifier(tag.getString("slot3")));
+        tool = ItemStack.fromTag(tag.getCompound("tool"));
     }
 }

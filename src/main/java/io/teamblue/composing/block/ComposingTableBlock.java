@@ -6,6 +6,7 @@ import io.teamblue.composing.item.CrystalItem;
 import io.teamblue.composing.item.StoneItem;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.state.StateManager;
@@ -18,7 +19,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
@@ -36,9 +36,11 @@ public class ComposingTableBlock extends BlockWithEntity {
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        ((ComposingTableBlockEntity)world.getBlockEntity(pos)).dropItems();
-        super.onBreak(world, pos, state, player);
+    public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (state.getBlock() != newState.getBlock()) {
+            ((ComposingTableBlockEntity) world.getBlockEntity(pos)).dropItems();
+            super.onBlockRemoved(state, world, pos, newState, moved);
+        }
     }
 
     @Override
@@ -72,62 +74,70 @@ public class ComposingTableBlock extends BlockWithEntity {
 
             if (centerArea[0] < hitPos.getX() && hitPos.getX() < centerArea[2] && centerArea[1] < hitPos.getZ() &&  hitPos.getZ() < centerArea[3]) {
                 // Center slot
-                if (player.isSneaking() && playerItemStack.isEmpty() && be.tool != null && !be.tool.isEmpty() || validComposeItem(playerItemStack)) {
+                if (player.isSneaking()) {
+                    if (!be.tool.isEmpty()) {
                         // Remove item
-                        player.setStackInHand(hand, be.tool.copy());
+                        ItemEntity e = new ItemEntity(world, pos.getX(), pos.getY() + 0.8, pos.getZ(), be.tool.copy());
+                        //e.setVelocity(0, 1, 0);
+                        world.spawnEntity(e);
                         be.tool = ItemStack.EMPTY;
-                } else if (!player.isSneaking() && !playerItemStack.isEmpty() && (be.tool == null || be.tool.isEmpty())) {
+                    }
+                } else  {
+                    if (be.tool.isEmpty() && validComposeItem(playerItemStack)) {
                         // Remove item
-                        be.tool = playerItemStack.copy();
-                        be.tool.setCount(1);
-                        playerItemStack.setCount(playerItemStack.getCount() - 1);
+                        be.tool = playerItemStack.split(1);
+                    }
                 }
             } else if (slot1Area[0] < hitPos.getX() && hitPos.getX() < slot1Area[2] && slot1Area[1] < hitPos.getZ() &&  hitPos.getZ() < slot1Area[3]) {
                 // Center slot
-                if (player.isSneaking() && playerItemStack.isEmpty()) {
+                if (player.isSneaking()) {
                     if (be.slot1 != null) {
                         // Remove item
-                        player.setStackInHand(hand, new ItemStack(be.slot1, 1));
+                        ItemEntity e = new ItemEntity(world, pos.getX() + slot1Area[0], pos.getY() + 1.1, pos.getZ() + slot3Area[1], new ItemStack(be.slot1));
+                        e.setVelocity(0, .1, 0);
+                        world.spawnEntity(e);
                         be.slot1 = null;
                     }
-                } else if (!player.isSneaking() && !playerItemStack.isEmpty()) {
+                } else {
                     // Add item
-                    if (be.slot1 == null && (playerItemStack.getItem() instanceof CrystalItem || playerItemStack.getItem() instanceof StoneItem)) {
+                    if (be.slot1 == null && validComposeUtil(playerItemStack)) {
                         // Remove item
-                        be.slot1 = playerItemStack.getItem();
-                        playerItemStack.setCount(playerItemStack.getCount() - 1);
+                        be.slot1 = playerItemStack.split(1).getItem();
                     }
                 }
             } else if (slot2Area[0] < hitPos.getX() && hitPos.getX() < slot2Area[2] && slot2Area[1] < hitPos.getZ() &&  hitPos.getZ() < slot2Area[3]) {
                 // Center slot
-                if (player.isSneaking() && playerItemStack.isEmpty()) {
+                if (player.isSneaking()) {
                     if (be.slot2 != null) {
                         // Remove item
-                        player.setStackInHand(hand, new ItemStack(be.slot2, 1));
+                        ItemEntity e = new ItemEntity(world, pos.getX() + slot2Area[0], pos.getY() + 1.1, pos.getZ() + slot2Area[1], new ItemStack(be.slot2));
+                        e.setVelocity(0, .1, 0);
+                        world.spawnEntity(e);
                         be.slot2 = null;
                     }
-                } else if (!player.isSneaking() && !playerItemStack.isEmpty()) {
+                } else {
                     // Add item
-                    if (be.slot2 == null && (playerItemStack.getItem() instanceof CrystalItem || playerItemStack.getItem() instanceof StoneItem)) {
+                    if (be.slot2 == null && validComposeUtil(playerItemStack)) {
                         // Remove item
-                        be.slot2 = playerItemStack.getItem();
-                        playerItemStack.setCount(playerItemStack.getCount() - 1);
+                        be.slot2 = playerItemStack.split(1).getItem();
                     }
                 }
             } else if (slot3Area[0] < hitPos.getX() && hitPos.getX() < slot3Area[2] && slot3Area[1] < hitPos.getZ() &&  hitPos.getZ() < slot3Area[3]) {
                 // Center slot
-                if (player.isSneaking() && playerItemStack.isEmpty()) {
+                if (player.isSneaking()) {
                     if (be.slot3 != null) {
                         // Remove item
-                        player.setStackInHand(hand, new ItemStack(be.slot3, 1));
+                        System.out.println("dropping item from 3");
+                        ItemEntity e = new ItemEntity(world, pos.getX() + slot3Area[0], pos.getY() + 1.1, pos.getZ() + slot3Area[1], new ItemStack(be.slot3));
+                        e.setVelocity(0, .1, 0);
+                        world.spawnEntity(e);
                         be.slot3 = null;
                     }
-                } else if (!player.isSneaking() && !playerItemStack.isEmpty()) {
+                } else {
                     // Add item
-                    if (be.slot3 == null && (playerItemStack.getItem() instanceof CrystalItem || playerItemStack.getItem() instanceof StoneItem)) {
+                    if (be.slot3 == null && validComposeUtil(playerItemStack)) {
                         // Remove item
-                        be.slot3 = playerItemStack.getItem();
-                        playerItemStack.setCount(playerItemStack.getCount() - 1);
+                        be.slot3 = playerItemStack.split(1).getItem();
                     }
                 }
             }
