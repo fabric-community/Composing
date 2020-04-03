@@ -33,6 +33,7 @@ public class ComposingTableBlockEntity extends BlockEntity {
 
     public ComposingTableBlockEntity() {
         super(Composing.COMPOSING_TABLE_BLOCK_ENTITY_TYPE);
+        this.tool = ItemStack.EMPTY;
     }
 
     private FusionTarget getFusionTarget() {
@@ -65,19 +66,19 @@ public class ComposingTableBlockEntity extends BlockEntity {
 
         if (stoneLevel == -1) {
             // upgrade crystals
-            if (crystalLevel == 2 || (tool != null && !tool.isEmpty()) || uniqueCrystals.size() == 2) {
+            if (crystalLevel == 2 || !tool.isEmpty() || uniqueCrystals.size() == 2) {
                 return new FusionTarget(-1, FusionType.INVALID, 0);
             }
             return new FusionTarget(crystalLevel, FusionType.UPGRADE_CRYSTAL, (crystalCount == 3) ? 1 : (crystalCount == 2) ? 0.5 : 0.25);
         } else if (crystalLevel == -1) {
             // Upgrade stones
-            if (stoneLevel == 2 || (tool != null && !tool.isEmpty())|| uniqueStones.size() != 1) {
+            if (stoneLevel == 2 || !tool.isEmpty() || uniqueStones.size() != 1) {
                 return new FusionTarget(-1, FusionType.INVALID, 0);
             }
             return new FusionTarget(stoneLevel, FusionType.UPGRADE_STONE, (stoneCount == 3) ? 1 : (stoneCount == 2) ? 0.5 : 0.25);
         } else {
             // compose items
-            if (tool == null || tool.isEmpty()){
+            if (tool.isEmpty()){
                 return new FusionTarget(-1, FusionType.INVALID, 0);
             }
 
@@ -122,7 +123,7 @@ public class ComposingTableBlockEntity extends BlockEntity {
         CrystalItem wind = new CrystalItem[] { ComposingItems.SMALL_WIND_CRYSTAL, ComposingItems.MEDIUM_WIND_CRYSTAL, ComposingItems.LARGE_WIND_CRYSTAL }[crystalLevel];
         CrystalItem fire = new CrystalItem[] { ComposingItems.SMALL_FIRE_CRYSTAL, ComposingItems.MEDIUM_FIRE_CRYSTAL, ComposingItems.LARGE_FIRE_CRYSTAL }[crystalLevel];
 
-        if (tool != null && !tool.isEmpty()) {
+        if (!tool.isEmpty()) {
             Item item = tool.getItem();
             if (item instanceof ArmorItem) {
                 // Armor modifiers

@@ -66,11 +66,11 @@ public class ComposingTableBlock extends BlockWithEntity {
 
             if (centerArea[0] < hitPos.getX() && hitPos.getX() < centerArea[2] && centerArea[1] < hitPos.getZ() &&  hitPos.getZ() < centerArea[3]) {
                 // Center slot
-                if (player.isSneaking() && playerItemStack.isEmpty() && be.tool != null && !be.tool.isEmpty() || validComposeItem(playerItemStack)) {
+                if (player.isSneaking() && playerItemStack.isEmpty() && !be.tool.isEmpty() || validComposeItem(playerItemStack)) {
                         // Remove item
                         player.setStackInHand(hand, be.tool.copy());
                         be.tool = ItemStack.EMPTY;
-                } else if (!player.isSneaking() && !playerItemStack.isEmpty() && (be.tool == null || be.tool.isEmpty())) {
+                } else if (!player.isSneaking() && !playerItemStack.isEmpty() && be.tool.isEmpty()) {
                         // Remove item
                         be.tool = playerItemStack.copy();
                         be.tool.setCount(1);
