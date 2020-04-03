@@ -14,11 +14,16 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ComposingTableBlockEntity extends BlockEntity {
+public class ComposingTableBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
     public Item slot1;
     public Item slot2;
     public Item slot3;
@@ -264,4 +269,43 @@ public class ComposingTableBlockEntity extends BlockEntity {
             world.spawnEntity(item);
         }
     }
+
+    @Override
+    public CompoundTag toTag(CompoundTag tag) {
+    	super.toTag(tag);
+    	tag.putString("Slot1", Registry.ITEM.getId(slot1).toString());
+    	tag.putString("Slot2", Registry.ITEM.getId(slot2).toString());
+    	tag.putString("Slot3", Registry.ITEM.getId(slot3).toString());
+    	tag.put("Tool", tool.toTag(new CompoundTag()));
+    	return tag;
+    }
+    
+    @Override
+    public void fromTag(CompoundTag tag) {
+    	super.fromTag(tag);
+    	if(tag.contains("Slot1", 8)) {
+    		slot1 = Registry.ITEM.get(new Identifier(tag.getString("Slot1")));
+    	}
+    	if(tag.contains("Slot2", 8)) {
+    		slot2 = Registry.ITEM.get(new Identifier(tag.getString("Slot2")));
+    	}
+    	if(tag.contains("Slot3", 8)) {
+    		slot3 = Registry.ITEM.get(new Identifier(tag.getString("Slot3")));
+    	}
+    	if(tag.contains("Tool", 10)) {
+    		tool = ItemStack.fromTag(tag.getCompound("Tool"));
+    	} else {
+    		tool = ItemStack.EMPTY;
+    	}
+    }
+    
+	@Override
+	public void fromClientTag(CompoundTag tag) {
+		fromTag(tag);
+	}
+
+	@Override
+	public CompoundTag toClientTag(CompoundTag tag) {
+		return toTag(tag);
+	}
 }
