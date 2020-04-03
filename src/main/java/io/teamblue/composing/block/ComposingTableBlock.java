@@ -36,6 +36,12 @@ public class ComposingTableBlock extends BlockWithEntity {
     }
 
     @Override
+    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        ((ComposingTableBlockEntity)world.getBlockEntity(pos)).dropItems();
+        super.onBreak(world, pos, state, player);
+    }
+
+    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (hit.getSide() == Direction.UP) {
             double[] slot1Area;
@@ -66,11 +72,11 @@ public class ComposingTableBlock extends BlockWithEntity {
 
             if (centerArea[0] < hitPos.getX() && hitPos.getX() < centerArea[2] && centerArea[1] < hitPos.getZ() &&  hitPos.getZ() < centerArea[3]) {
                 // Center slot
-                if (player.isSneaking() && playerItemStack.isEmpty() && !be.tool.isEmpty() || validComposeItem(playerItemStack)) {
+                if (player.isSneaking() && playerItemStack.isEmpty() && be.tool != null && !be.tool.isEmpty() || validComposeItem(playerItemStack)) {
                         // Remove item
                         player.setStackInHand(hand, be.tool.copy());
                         be.tool = ItemStack.EMPTY;
-                } else if (!player.isSneaking() && !playerItemStack.isEmpty() && be.tool.isEmpty()) {
+                } else if (!player.isSneaking() && !playerItemStack.isEmpty() && (be.tool == null || be.tool.isEmpty())) {
                         // Remove item
                         be.tool = playerItemStack.copy();
                         be.tool.setCount(1);
@@ -127,6 +133,11 @@ public class ComposingTableBlock extends BlockWithEntity {
             }
         }
         return ActionResult.PASS;
+    }
+
+    private boolean validComposeUtil(ItemStack playerItemStack) {
+        Item i = playerItemStack.getItem();
+        return i instanceof StoneItem || i instanceof CrystalItem;
     }
 
     private boolean validComposeItem(ItemStack stack) {
