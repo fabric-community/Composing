@@ -82,7 +82,7 @@ public class ComposingTableBlock extends Block implements BlockEntityProvider {
                         be.tool.setCount(1);
                         playerItemStack.setCount(playerItemStack.getCount() - 1);
                 }
-            } else if (slot1Area[0] < hitPos.getX() && hitPos.getX() < slot1Area[2] && slot1Area[1] < hitPos.getZ() &&  hitPos.getZ() < slot1Area[3]) {
+            } else if (slot1Area[0] < hitPos.getX() && hitPos.getX() < slot1Area[2] && slot1Area[1] < hitPos.getZ() &&  hitPos.getZ() < slot1Area[3] && validComposeUtil(playerItemStack)) {
                 // Center slot
                 if (player.isSneaking() && playerItemStack.isEmpty()) {
                     if (be.slot1 != null) {
@@ -98,7 +98,7 @@ public class ComposingTableBlock extends Block implements BlockEntityProvider {
                         playerItemStack.setCount(playerItemStack.getCount() - 1);
                     }
                 }
-            } else if (slot2Area[0] < hitPos.getX() && hitPos.getX() < slot2Area[2] && slot2Area[1] < hitPos.getZ() &&  hitPos.getZ() < slot2Area[3]) {
+            } else if (slot2Area[0] < hitPos.getX() && hitPos.getX() < slot2Area[2] && slot2Area[1] < hitPos.getZ() &&  hitPos.getZ() < slot2Area[3] && validComposeUtil(playerItemStack)) {
                 // Center slot
                 if (player.isSneaking() && playerItemStack.isEmpty()) {
                     if (be.slot2 != null) {
@@ -114,7 +114,7 @@ public class ComposingTableBlock extends Block implements BlockEntityProvider {
                         playerItemStack.setCount(playerItemStack.getCount() - 1);
                     }
                 }
-            } else if (slot3Area[0] < hitPos.getX() && hitPos.getX() < slot3Area[2] && slot3Area[1] < hitPos.getZ() &&  hitPos.getZ() < slot3Area[3]) {
+            } else if (slot3Area[0] < hitPos.getX() && hitPos.getX() < slot3Area[2] && slot3Area[1] < hitPos.getZ() &&  hitPos.getZ() < slot3Area[3] && validComposeUtil(playerItemStack)) {
                 // Center slot
                 if (player.isSneaking() && playerItemStack.isEmpty()) {
                     if (be.slot3 != null) {
@@ -133,6 +133,11 @@ public class ComposingTableBlock extends Block implements BlockEntityProvider {
             }
         }
         return ActionResult.PASS;
+    }
+
+    private boolean validComposeUtil(ItemStack playerItemStack) {
+        Item i = playerItemStack.getItem();
+        return i instanceof StoneItem || i instanceof CrystalItem;
     }
 
     private boolean validComposeItem(ItemStack stack) {
