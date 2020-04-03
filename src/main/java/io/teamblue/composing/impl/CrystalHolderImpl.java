@@ -40,13 +40,18 @@ public class CrystalHolderImpl implements CrystalHolder {
 	}
 
 	@Override
-	public void fromTag(CompoundTag compoundTag) {
-
+	public void fromTag(CompoundTag tag) {
+		this.level = tag.getInt("Level");
+		this.primary = CrystalElement.forName(tag.getString("Primary"));
+		this.secondary = CrystalElement.forName(tag.getString("Secondary"));
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag compoundTag) {
-		return null;
+	public CompoundTag toTag(CompoundTag tag) {
+		tag.putInt("Level", level);
+		tag.putString("Primary", primary.asString());
+		tag.putString("Secondary", secondary.asString());
+		return tag;
 	}
 
 	@Override
