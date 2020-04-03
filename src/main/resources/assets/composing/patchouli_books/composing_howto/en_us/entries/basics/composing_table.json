@@ -1,0 +1,15 @@
+{
+  "name": "Composing Table",
+  "icon": "composing:composing_table",
+  "category": "basics",
+  "pages": [
+    {
+      "type": "text",
+      "text": "For composing, a composing table is required."
+    },
+    {
+      "type": "crafting",
+      "recipe": "composing:composing_table"
+    }
+  ]
+}
