@@ -27,7 +27,6 @@ repositories {
 	maven { url "https://server.bbkr.space/artifactory/libs-release" } // Cotton maven - home of Cotton projects
 	maven { url "https://maven.onyxstudios.dev" } // Onyx Studios maven - home of Cardinal Components
 	maven { url "https://jitpack.io" }
-	maven { url 'https://maven.blamejared.com' }
 }
 
 dependencies {
@@ -41,7 +40,12 @@ dependencies {
 	modApi "com.github.NerdHubMC.Cardinal-Components-API:cardinal-components-item:${project.cardinal_version}"
 	modApi "com.github.emilyploszaj:Trinkets:${project.trinkets_version}"
 
-	include "com.github.Vazkii:Patchouli:1.15-fabric-SNAPSHOT"
+	include "com.github.Vazkii:Patchouli:${project.patchouli_version}"
+	include "io.github.cottonmc:LibCD:${project.libcd_version}"
+
+	// Only for testing!
+	modRuntime "com.github.Vazkii:Patchouli:${project.patchouli_version}"
+	modRuntime "io.github.cottonmc:LibCD:${project.libcd_version}"
 }
 
 processResources {
