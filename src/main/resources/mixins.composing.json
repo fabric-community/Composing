@@ -3,5 +3,6 @@
   "package": "io.teamblue.composing.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "HostileEntityDropsMixin"
   ]
 }
