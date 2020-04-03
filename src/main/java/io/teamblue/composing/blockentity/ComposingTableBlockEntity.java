@@ -244,4 +244,24 @@ public class ComposingTableBlockEntity extends BlockEntity {
             slot3 = null;
         }
     }
+
+    public void dropItems() {
+        List<ItemEntity> items = new ArrayList<>();
+        if (slot1 != null) {
+            items.add(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(slot1, 1)));
+        }
+        if (slot2 != null) {
+            items.add(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(slot2, 1)));
+        }
+        if (slot3 != null) {
+            items.add(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(slot3, 1)));
+        }
+        if (tool != null && !tool.isEmpty()) {
+            items.add(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), tool));
+        }
+
+        for (ItemEntity item : items) {
+            world.spawnEntity(item);
+        }
+    }
 }

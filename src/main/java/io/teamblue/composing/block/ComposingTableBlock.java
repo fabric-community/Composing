@@ -36,6 +36,12 @@ public class ComposingTableBlock extends Block implements BlockEntityProvider {
     }
 
     @Override
+    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        ((ComposingTableBlockEntity)world.getBlockEntity(pos)).dropItems();
+        super.onBreak(world, pos, state, player);
+    }
+
+    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (hit.getSide() == Direction.UP) {
             double[] slot1Area = new double[] {};
@@ -66,7 +72,7 @@ public class ComposingTableBlock extends Block implements BlockEntityProvider {
 
             if (centerArea[0] < hitPos.getX() && hitPos.getX() < centerArea[2] && centerArea[1] < hitPos.getZ() &&  hitPos.getZ() < centerArea[3]) {
                 // Center slot
-                if (player.isSneaking() && playerItemStack.isEmpty() && be.tool != null && !be.tool.isEmpty() || validComposeItem(playerItemStack)) {
+                if (player.isSneaking() && playerItemStack.isEmpty() && be.tool != null && !be.tool.isEmpty() && validComposeItem(playerItemStack)) {
                         // Remove item
                         player.setStackInHand(hand, be.tool.copy());
                         be.tool = ItemStack.EMPTY;
