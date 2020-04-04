@@ -6,6 +6,22 @@
     {
       "type": "text",
       "text": "Here you can find a list of all composing effects that can be put on armor. Note that the final upgrade only has a 50% success rate."
+    },
+    {
+      "type": "composing",
+      "slot1": "composing:small_earth_crystal,composing:medium_earth_crystal,composing:large_earth_crystal,composing:large_earth_crystal",
+      "slot2": "composing:blessing_stone,composing:blessing_stone,composing:soul_stone,composing:holy_stone",
+      "slot3": "composing:small_earth_crystal,composing:medium_earth_crystal,composing:large_earth_crystal,composing:large_earth_crystal",
+      "center": "minecraft:diamond_chestplate",
+      "text": "Armor (n)"
+    },
+    {
+      "type": "composing",
+      "slot1": "composing:small_earth_crystal,composing:medium_earth_crystal,composing:large_earth_crystal,composing:large_earth_crystal",
+      "slot2": "composing:blessing_stone,composing:blessing_stone,composing:soul_stone,composing:holy_stone",
+      "slot3": "composing:small_wind_crystal,composing:medium_wind_crystal,composing:large_wind_crystal,composing:large_wind_crystal",
+      "center": "minecraft:diamond_chestplate",
+      "text": "Armor Toughness (n)"
     }
   ]
 }

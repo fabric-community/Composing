@@ -11,6 +11,7 @@ import io.teamblue.composing.util.fusion.FusionTarget;
 import io.teamblue.composing.util.fusion.FusionType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.*;
@@ -133,6 +134,27 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
             Item item = tool.getItem();
             if (item instanceof ArmorItem) {
                 // Armor modifiers
+                if (crystals.size() == 1 && crystals.contains(earth)) {
+                    return new Pair<>(
+                            EntityAttributes.ARMOR.getId(),
+                            new EntityAttributeModifier(
+                                    EntityAttributeModifiers.ARMOR,
+                                    "Armor",
+                                    2*(target.getLevel()+1),  // 2-8
+                                    EntityAttributeModifier.Operation.ADDITION
+                            )
+                    );
+                } else if (crystals.contains(wind) && crystals.contains(earth)) {
+                    return new Pair<>(
+                            EntityAttributes.ARMOR_TOUGHNESS.getId(),
+                            new EntityAttributeModifier(
+                                    EntityAttributeModifiers.ARMOR_TOUGHNESS,
+                                    "Armor Toughness",
+                                    2*(target.getLevel()+1),  // 2-8
+                                    EntityAttributeModifier.Operation.ADDITION
+                            )
+                    );
+                }
             } else if (item instanceof SwordItem || item instanceof RangedWeaponItem || item instanceof TridentItem) {
                 // Weapon modifiers
                 if (crystals.contains(earth) && crystals.contains(fire)) {
