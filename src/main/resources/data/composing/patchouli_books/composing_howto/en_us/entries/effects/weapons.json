@@ -1,0 +1,19 @@
+{
+  "name": "Weapons",
+  "icon": "minecraft:diamond_sword",
+  "category": "effects",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Here you can find a list of all composing effects that can be put on weapons. Note that the final upgrade only has a 50% success rate."
+    },
+    {
+      "type": "composing",
+      "slot1": "composing:small_earth_crystal,composing:medium_earth_crystal,composing:large_earth_crystal,composing:large_earth_crystal",
+      "slot2": "composing:blessing_stone,composing:blessing_stone,composing:soul_stone,composing:holy_stone",
+      "slot3": "composing:small_fire_crystal,composing:medium_fire_crystal,composing:large_fire_crystal,composing:large_fire_crystal",
+      "center": "minecraft:diamond_sword",
+      "text": "Attack damage (n)"
+    }
+  ]
+}

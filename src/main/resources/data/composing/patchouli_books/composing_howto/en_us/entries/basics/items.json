@@ -6,6 +6,10 @@
     {
       "type": "text",
       "text": "All composing materials can be dropped by any hostile entity."
+    },
+    {
+      "type": "spotlight",
+      "item": "composing:small_earth_crystal"
     }
   ]
 }

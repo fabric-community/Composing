@@ -1,0 +1,43 @@
+{
+  "components": [
+    {
+      "type": "image",
+      "image": "composing:textures/misc/patchouli_composing.png",
+      "texture_width": 176,
+      "texture_height": 182,
+      "width": 176,
+      "height": 182,
+      "scale": 0.66
+    },
+    {
+      "type": "item",
+      "item": "#slot1",
+      "x": 6,
+      "y": 54
+    },
+    {
+      "type": "item",
+      "item": "#slot2",
+      "x": 50,
+      "y": 7
+    },
+    {
+      "type": "item",
+      "item": "#slot3",
+      "x": 94,
+      "y": 54
+    },
+    {
+      "type": "item",
+      "item": "#center",
+      "x": 50,
+      "y": 54
+    },
+    {
+      "type": "text",
+      "text": "#text",
+      "x": 0,
+      "y": 130
+    }
+  ]
+}

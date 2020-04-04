@@ -1,0 +1,11 @@
+{
+  "name": "Tools",
+  "icon": "minecraft:diamond_pickaxe",
+  "category": "effects",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Here you can find a list of all composing effects that can be put on trinkets. Note that the final upgrade only has a 50% success rate."
+    }
+  ]
+}

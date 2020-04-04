@@ -1,0 +1,43 @@
+{
+  "name": "Upgrading",
+  "icon": "composing:large_water_crystal",
+  "category": "basics",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Crystals and stones can be upgraded. If the chance is less than 100%, there's a chance the items used are voided. The items in the center are the results on these pages."
+    },
+    {
+      "type": "composing",
+      "slot1": "composing:small_earth_crystal,composing:medium_earth_crystal,composing:blessing_stone,composing:soul_stone",
+      "slot2": "composing:small_earth_crystal,composing:medium_earth_crystal,composing:blessing_stone,composing:soul_stone",
+      "slot3": "composing:small_earth_crystal,composing:medium_earth_crystal,composing:blessing_stone,composing:soul_stone",
+      "center": "composing:medium_earth_crystal,composing:large_earth_crystal,composing:soul_stone,composing:holy_stone",
+      "text": "100% chance of success"
+    },
+    {
+      "type": "composing",
+      "slot1": "composing:small_earth_crystal,composing:small_earth_crystal,composing:small_earth_crystal,composing:small_water_crystal",
+      "slot2": "composing:small_wind_crystal,composing:small_wind_crystal,composing:small_water_crystal,composing:small_wind_crystal",
+      "slot3": "composing:small_water_crystal,composing:small_fire_crystal,composing:small_fire_crystal,composing:small_fire_crystal",
+      "center": "composing:medium_fire_crystal,composing:medium_water_crystal,composing:medium_wind_crystal,composing:medium_earth_crystal",
+      "text": "100% chance of success"
+    },
+    {
+      "type": "composing",
+      "slot1": "composing:small_earth_crystal,composing:medium_earth_crystal,composing:blessing_stone,composing:soul_stone",
+      "slot2": "minecraft:air",
+      "slot3": "composing:small_earth_crystal,composing:medium_earth_crystal,composing:blessing_stone,composing:soul_stone",
+      "center": "composing:medium_earth_crystal,composing:large_earth_crystal,composing:soul_stone,composing:holy_stone",
+      "text": "50% chance of success"
+    },
+    {
+      "type": "composing",
+      "slot1": "minecraft:air",
+      "slot2": "composing:small_earth_crystal,composing:medium_earth_crystal,composing:blessing_stone,composing:soul_stone",
+      "slot3": "minecraft:air",
+      "center": "composing:medium_earth_crystal,composing:large_earth_crystal,composing:soul_stone,composing:holy_stone",
+      "text": "25% chance of success"
+    }
+  ]
+}

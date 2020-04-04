@@ -1,0 +1,11 @@
+{
+  "name": "Armor",
+  "icon": "minecraft:diamond_chestplate",
+  "category": "effects",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Here you can find a list of all composing effects that can be put on armor. Note that the final upgrade only has a 50% success rate."
+    }
+  ]
+}

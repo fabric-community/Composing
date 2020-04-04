@@ -46,9 +46,9 @@ public class ComposingTableBlock extends BlockWithEntity {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (hit.getSide() == Direction.UP) {
-            double[] slot1Area;
-            double[] slot2Area;
-            double[] slot3Area;
+            double[] slot1Area = new double[] {};
+            double[] slot2Area = new double[] {};
+            double[] slot3Area = new double[] {};
             double[] centerArea = new double[] { 0, 0, 1, 1 };
 
             Vec3d hitPos = hit.getPos().subtract(new Vec3d(hit.getBlockPos()));
