@@ -14,6 +14,14 @@
       "slot3": "composing:small_fire_crystal,composing:medium_fire_crystal,composing:large_fire_crystal,composing:large_fire_crystal",
       "center": "minecraft:diamond_sword",
       "text": "Attack damage (n)"
+    },
+    {
+      "type": "composing",
+      "slot1": "composing:small_water_crystal,composing:medium_water_crystal,composing:large_water_crystal,composing:large_water_crystal",
+      "slot2": "composing:blessing_stone,composing:blessing_stone,composing:soul_stone,composing:holy_stone",
+      "slot3": "composing:small_water_crystal,composing:medium_water_crystal,composing:large_water_crystal,composing:large_water_crystal",
+      "center": "minecraft:diamond_sword",
+      "text": "Looting (n)"
     }
   ]
 }

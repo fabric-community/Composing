@@ -5,7 +5,15 @@
   "pages": [
     {
       "type": "text",
-      "text": "Here you can find a list of all composing effects that can be put on trinkets. Note that the final upgrade only has a 50% success rate."
+      "text": "Here you can find a list of all composing effects that can be put on trinkets. Note that the final upgrade only has a 50% success rate. Trinkets are replaced by a golden ingot."
+    },
+    {
+      "type": "composing",
+      "slot1": "composing:small_water_crystal,composing:medium_water_crystal,composing:large_water_crystal,composing:large_water_crystal",
+      "slot2": "composing:blessing_stone,composing:blessing_stone,composing:soul_stone,composing:holy_stone",
+      "slot3": "composing:small_water_crystal,composing:medium_water_crystal,composing:large_water_crystal,composing:large_water_crystal",
+      "center": "minecraft:gold_ingot",
+      "text": "Luck (n)"
     }
   ]
 }

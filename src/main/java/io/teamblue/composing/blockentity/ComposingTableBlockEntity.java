@@ -140,20 +140,24 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                             new EntityAttributeModifier(
                                     EntityAttributeModifiers.ARMOR,
                                     "Armor",
-                                    2*(target.getLevel()+1),  // 2-8
-                                    EntityAttributeModifier.Operation.ADDITION
-                            )
-                    );
+                                    5*(target.getLevel()+1),  // 2-8
+                                    EntityAttributeModifier.Operation.ADDITION));
                 } else if (crystals.contains(wind) && crystals.contains(earth)) {
                     return new Pair<>(
                             EntityAttributes.ARMOR_TOUGHNESS.getId(),
                             new EntityAttributeModifier(
                                     EntityAttributeModifiers.ARMOR_TOUGHNESS,
                                     "Armor Toughness",
-                                    2*(target.getLevel()+1),  // 2-8
-                                    EntityAttributeModifier.Operation.ADDITION
-                            )
-                    );
+                                    5*(target.getLevel()+1),  // 2-8
+                                    EntityAttributeModifier.Operation.ADDITION));
+                } else if (crystals.size() == 1 && crystals.contains(water)){
+                    return new Pair<>(
+                            EntityAttributes.MAX_HEALTH.getId(),
+                            new EntityAttributeModifier(
+                                    EntityAttributeModifiers.MAX_HEALTH,
+                                    "Health",
+                                    5*(target.getLevel()+1),  // 2-8
+                                    EntityAttributeModifier.Operation.ADDITION));
                 }
             } else if (item instanceof SwordItem || item instanceof RangedWeaponItem || item instanceof TridentItem) {
                 // Weapon modifiers
@@ -164,13 +168,47 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                             new EntityAttributeModifier(
                                     EntityAttributeModifiers.WEAPON_DAMAGE,
                                     "Weapon Damage",
+                                    2*(target.getLevel()+1),  // 2-8
+                                    EntityAttributeModifier.Operation.ADDITION));
+                } else if (crystals.contains(water) && crystals.contains(earth)) {
+                    return new Pair<>(
+                            EntityAttributes.LUCK.getId(),
+                            new EntityAttributeModifier(
+                                    EntityAttributeModifiers.LUCK,
+                                    "Looting",
                                     target.getLevel()+1,  // 1-4
                                     EntityAttributeModifier.Operation.ADDITION));
                 }
             } else if (item instanceof ToolItem) {
                 // Tool modifiers
+                if (crystals.contains(water) && crystals.contains(earth)) {
+                    return new Pair<>(
+                            EntityAttributes.LUCK.getId(),
+                            new EntityAttributeModifier(
+                                    EntityAttributeModifiers.LUCK,
+                                    "Fortune",
+                                    target.getLevel()+1,  // 1-4
+                                    EntityAttributeModifier.Operation.ADDITION));
+                }
             } else if (item instanceof ITrinket) {
                 // Trinket modifiers
+                if (crystals.size() == 1 && crystals.contains(water)){
+                    return new Pair<>(
+                            EntityAttributes.MAX_HEALTH.getId(),
+                            new EntityAttributeModifier(
+                                    EntityAttributeModifiers.MAX_HEALTH,
+                                    "Health",
+                                    5*(target.getLevel()+1),  // 2-8
+                                    EntityAttributeModifier.Operation.ADDITION));
+                } else if (crystals.contains(water) && crystals.contains(earth)) {
+                    return new Pair<>(
+                            EntityAttributes.LUCK.getId(),
+                            new EntityAttributeModifier(
+                                    EntityAttributeModifiers.LUCK,
+                                    "Luck",
+                                    target.getLevel()+1,  // 1-4
+                                    EntityAttributeModifier.Operation.ADDITION));
+                }
             }
         }
         return null;
