@@ -25,6 +25,11 @@ import net.minecraft.world.World;
 public class ComposingTableBlock extends BlockWithEntity {
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
 
+    private double[] slot1Area = new double[] { 0, 0, 0.33, 0.33 };
+    private double[] slot2Area = new double[] { 0.33, 0, 0.66, 0.33 };
+    private double[] slot3Area = new double[] { 0.66, 0, 1, 0.33};
+    private double[] centerArea = new double[] { 0.33, 0.33, 0.66, 0.66 };
+
     protected ComposingTableBlock() {
         super(Settings.of(Material.STONE));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
@@ -46,10 +51,6 @@ public class ComposingTableBlock extends BlockWithEntity {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (hit.getSide() == Direction.UP) {
-            double[] slot1Area = new double[] {};
-            double[] slot2Area = new double[] {};
-            double[] slot3Area = new double[] {};
-            double[] centerArea = new double[] { 0, 0, 1, 1 };
 
             Vec3d hitPos = hit.getPos().subtract(new Vec3d(hit.getBlockPos()));
 
@@ -58,11 +59,8 @@ public class ComposingTableBlock extends BlockWithEntity {
             switch (state.get(FACING)) {
                 // Set areas
                 case NORTH:
-                    break;
                 case SOUTH:
-                    break;
                 case WEST:
-                    break;
                 case EAST:
                     break;
                 default:
@@ -72,7 +70,10 @@ public class ComposingTableBlock extends BlockWithEntity {
             ComposingTableBlockEntity be = (ComposingTableBlockEntity) world.getBlockEntity(pos);
             ItemStack playerItemStack = (hand == Hand.MAIN_HAND) ? player.getMainHandStack() : player.getOffHandStack();
 
-            if (centerArea[0] < hitPos.getX() && hitPos.getX() < centerArea[2] && centerArea[1] < hitPos.getZ() &&  hitPos.getZ() < centerArea[3]) {
+            if (playerItemStack.getItem() == Items.STICK) {
+                be.tempCraft();
+            }
+            else if (centerArea[0] < hitPos.getX() && hitPos.getX() < centerArea[2] && centerArea[1] < hitPos.getZ() &&  hitPos.getZ() < centerArea[3]) {
                 // Center slot
                 if (player.isSneaking()) {
                     if (!be.tool.isEmpty()) {

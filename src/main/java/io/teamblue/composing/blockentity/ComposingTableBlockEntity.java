@@ -3,10 +3,12 @@ package io.teamblue.composing.blockentity;
 import com.mojang.datafixers.util.Pair;
 import dev.emi.trinkets.api.ITrinket;
 import io.teamblue.composing.Composing;
+import io.teamblue.composing.api.CrystalElement;
 import io.teamblue.composing.item.ComposingItems;
 import io.teamblue.composing.item.CrystalItem;
 import io.teamblue.composing.item.StoneItem;
 import io.teamblue.composing.util.fusion.EntityAttributeModifiers;
+import io.teamblue.composing.util.fusion.FusionModifier;
 import io.teamblue.composing.util.fusion.FusionTarget;
 import io.teamblue.composing.util.fusion.FusionType;
 import net.minecraft.block.entity.BlockEntity;
@@ -33,281 +35,294 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
 
     private Random rand = new Random();
 
-    // Fields so we dont have to pass them around
-    private int crystalLevel;
-    private Set<Item> uniqueCrystals;
-    private Set<Item> uniqueStones;
-
     public ComposingTableBlockEntity() {
         super(Composing.COMPOSING_TABLE_BLOCK_ENTITY_TYPE);
     }
 
     private FusionTarget getFusionTarget() {
-        crystalLevel = -1;
+        int crystalLevel = -1;
         int crystalCount = 0;
-        uniqueCrystals = new HashSet<>();
+        Set<CrystalElement> uniqueCrystals = new HashSet<>();
         int stoneLevel = -1;
         int stoneCount = 0;
-        uniqueStones = new HashSet<>();
 
         for (Item it : new Item[] { slot1, slot2, slot3 }) {
             if (it instanceof CrystalItem) {
                 crystalCount++;
                 if (crystalLevel >= 0 && ((CrystalItem) it).getLevel() != crystalLevel) {
-                    return new FusionTarget(-1, FusionType.INVALID, 0);
+                    return null;
                 } else {
                     crystalLevel = ((CrystalItem) it).getLevel();
-                    uniqueCrystals.add(it);
+                    uniqueCrystals.add(((CrystalItem) it).getElement());
                 }
             } else if (it instanceof StoneItem) {
                 stoneCount++;
                 if (stoneLevel >= 0 && ((StoneItem) it).getLevel() != stoneLevel) {
-                    return new FusionTarget(-1, FusionType.INVALID, 0);
+                    return null;
                 } else {
                     stoneLevel = ((StoneItem) it).getLevel();
-                    uniqueStones.add(it);
                 }
             }
         }
 
-        if (stoneLevel == -1) {
+        if (stoneLevel == -1 && crystalCount > 0) {
             // upgrade crystals
             if (crystalLevel == 2 || !tool.isEmpty() || uniqueCrystals.size() == 2) {
-                return new FusionTarget(-1, FusionType.INVALID, 0);
+                return null;
             }
-            return new FusionTarget(crystalLevel, FusionType.UPGRADE_CRYSTAL, (crystalCount == 3) ? 1 : (crystalCount == 2) ? 0.5 : 0.25);
-        } else if (crystalLevel == -1) {
+            CrystalElement crystal = CrystalElement.WIND; // default, shouldn't matter
+
+            if (uniqueCrystals.size() == 1) {
+                crystal = uniqueCrystals.iterator().next();
+            } else {
+                for (CrystalElement search : CrystalElement.values()) {
+                    if (!uniqueCrystals.contains(search)) {
+                        crystal = search;
+                        break;
+                    }
+                }
+            }
+            return new FusionTarget(CrystalItem.fromData(crystal, crystalLevel+1), (crystalCount == 3) ? 1 : (crystalCount == 2) ? 0.5 : 0.25);
+
+        } else if (crystalLevel == -1 && stoneCount > 0) {
             // Upgrade stones
-            if (stoneLevel == 2 || !tool.isEmpty() || uniqueStones.size() != 1) {
-                return new FusionTarget(-1, FusionType.INVALID, 0);
+            if (stoneLevel == 2 || !tool.isEmpty()) {
+                return null;
             }
-            return new FusionTarget(stoneLevel, FusionType.UPGRADE_STONE, (stoneCount == 3) ? 1 : (stoneCount == 2) ? 0.5 : 0.25);
-        } else {
+            return new FusionTarget(StoneItem.fromData(stoneLevel+1), (stoneCount == 3) ? 1 : (stoneCount == 2) ? 0.5 : 0.25);
+        } else if (stoneCount > 0 && crystalCount > 0){
             // compose items
             if (tool.isEmpty()){
-                return new FusionTarget(-1, FusionType.INVALID, 0);
+                return null;
             }
 
             if (crystalCount != 2) {
-                return new FusionTarget(-1, FusionType.INVALID, 0);
+                return null;
             }
 
             switch (stoneLevel) {
                 case 0:
                     if (crystalLevel > 1) {
-                        return new FusionTarget(-1, FusionType.INVALID, 0);
+                        return null;
                     }
-                    return new FusionTarget(crystalLevel, FusionType.UPGRADE_TOOL, 1);
+                    return new FusionTarget(getFusionModifier(uniqueCrystals), crystalLevel, 1);
                 case 1:
                     if (crystalLevel != 2) {
-                        return new FusionTarget(-1, FusionType.INVALID, 0);
+                        return null;
                     }
-                    return new FusionTarget(2, FusionType.UPGRADE_TOOL, 1);
+                    return new FusionTarget(getFusionModifier(uniqueCrystals), 2, 1);
                 case 2:
                     if (crystalLevel != 2) {
-                        return new FusionTarget(-1, FusionType.INVALID, 0);
+                        return null;
                     }
-                    return new FusionTarget(3, FusionType.UPGRADE_TOOL, 0.5);
+                    return new FusionTarget(getFusionModifier(uniqueCrystals), 3, 0.5);
                 default:
                     throw new AssertionError("Should not happen");
             }
+        } else {
+            return null;
         }
     }
+
+    private FusionModifier getFusionModifier(Set<CrystalElement> crystals) {
+        if (crystals.size() == 1) {
+            CrystalElement crystal = crystals.iterator().next();
+            switch (crystal) {
+                case WIND:
+                    return FusionModifier.WIND_WIND;
+                case EARTH:
+                    return FusionModifier.EARTH_EARTH;
+                case FIRE:
+                    return FusionModifier.FIRE_FIRE;
+                case WATER:
+                    return FusionModifier.WATER_WATER;
+            }
+        } else {
+            Iterator<CrystalElement> getter = crystals.iterator();
+            CrystalElement crystal_a = getter.next();
+            CrystalElement crystal_b = getter.next();
+            // multiplex the types
+            switch (crystal_a) {
+                case WIND:
+                    switch (crystal_b) {
+                        case EARTH:
+                            return FusionModifier.WIND_EARTH;
+                        case FIRE:
+                            return FusionModifier.FIRE_WIND;
+                        case WATER:
+                            return FusionModifier.WATER_WIND;
+                    }
+                case EARTH:
+                    switch (crystal_b) {
+                        case WIND:
+                            return FusionModifier.WIND_EARTH;
+                        case FIRE:
+                            return FusionModifier.FIRE_EARTH;
+                        case WATER:
+                            return FusionModifier.WATER_EARTH;
+                    }
+                case FIRE:
+                    switch (crystal_b) {
+                        case WIND:
+                            return FusionModifier.FIRE_WIND;
+                        case EARTH:
+                            return FusionModifier.FIRE_EARTH;
+                        case WATER:
+                            return FusionModifier.FIRE_WATER;
+                    }
+                case WATER:
+                    switch (crystal_b) {
+                        case WIND:
+                            return FusionModifier.WATER_WIND;
+                        case EARTH:
+                            return FusionModifier.WATER_EARTH;
+                        case FIRE:
+                            return FusionModifier.FIRE_WATER;
+                    }
+            }
+        }
+        return null;
+    }
+
 
     // TODO
     // - Get available modifiers for item
     // - If invalid, return null
     // - If valid, return modifier matching crystals
     private Pair<String, EntityAttributeModifier> getTargetModifier(FusionTarget target) {
-        // Size 1: 1 crystal type
-        // Size 2: 2 crystal types
-        List<CrystalItem> crystals = uniqueCrystals.stream().map(i -> (CrystalItem)i).collect(Collectors.toList());
-
-        // Crystals to check for
-        CrystalItem earth = new CrystalItem[] { ComposingItems.SMALL_EARTH_CRYSTAL, ComposingItems.MEDIUM_EARTH_CRYSTAL, ComposingItems.LARGE_EARTH_CRYSTAL }[crystalLevel];
-        CrystalItem water = new CrystalItem[] { ComposingItems.SMALL_WATER_CRYSTAL, ComposingItems.MEDIUM_WATER_CRYSTAL, ComposingItems.LARGE_WATER_CRYSTAL }[crystalLevel];
-        CrystalItem wind = new CrystalItem[] { ComposingItems.SMALL_WIND_CRYSTAL, ComposingItems.MEDIUM_WIND_CRYSTAL, ComposingItems.LARGE_WIND_CRYSTAL }[crystalLevel];
-        CrystalItem fire = new CrystalItem[] { ComposingItems.SMALL_FIRE_CRYSTAL, ComposingItems.MEDIUM_FIRE_CRYSTAL, ComposingItems.LARGE_FIRE_CRYSTAL }[crystalLevel];
+        FusionModifier modifier = target.getModifier();
 
         if (!tool.isEmpty()) {
             Item item = tool.getItem();
             if (item instanceof ArmorItem) {
                 // Armor modifiers
-                if (crystals.size() == 1 && crystals.contains(earth)) {
-                    return new Pair<>(
-                            EntityAttributes.ARMOR.getId(),
-                            new EntityAttributeModifier(
-                                    EntityAttributeModifiers.ARMOR,
-                                    "Armor",
-                                    5*(target.getLevel()+1),  // 2-8
-                                    EntityAttributeModifier.Operation.ADDITION));
-                } else if (crystals.contains(wind) && crystals.contains(earth)) {
-                    return new Pair<>(
-                            EntityAttributes.ARMOR_TOUGHNESS.getId(),
-                            new EntityAttributeModifier(
-                                    EntityAttributeModifiers.ARMOR_TOUGHNESS,
-                                    "Armor Toughness",
-                                    5*(target.getLevel()+1),  // 2-8
-                                    EntityAttributeModifier.Operation.ADDITION));
-                } else if (crystals.size() == 1 && crystals.contains(water)){
-                    return new Pair<>(
-                            EntityAttributes.MAX_HEALTH.getId(),
-                            new EntityAttributeModifier(
-                                    EntityAttributeModifiers.MAX_HEALTH,
-                                    "Health",
-                                    5*(target.getLevel()+1),  // 2-8
-                                    EntityAttributeModifier.Operation.ADDITION));
+                switch(modifier) {
+                    case EARTH_EARTH:
+                        return new Pair<>(
+                                EntityAttributes.ARMOR.getId(),
+                                new EntityAttributeModifier(
+                                        EntityAttributeModifiers.ARMOR,
+                                        "Armor",
+                                        5*(target.getLevel()+1),  // 2-8
+                                        EntityAttributeModifier.Operation.ADDITION));
+                    case WIND_EARTH:
+                        return new Pair<>(
+                                EntityAttributes.ARMOR_TOUGHNESS.getId(),
+                                new EntityAttributeModifier(
+                                        EntityAttributeModifiers.ARMOR_TOUGHNESS,
+                                        "Armor Toughness",
+                                        5*(target.getLevel()+1),  // 2-8
+                                        EntityAttributeModifier.Operation.ADDITION));
+                    case WATER_WATER:
+                        return new Pair<>(
+                                EntityAttributes.MAX_HEALTH.getId(),
+                                new EntityAttributeModifier(
+                                        EntityAttributeModifiers.MAX_HEALTH,
+                                        "Health",
+                                        5*(target.getLevel()+1),  // 2-8
+                                        EntityAttributeModifier.Operation.ADDITION));
                 }
             } else if (item instanceof SwordItem || item instanceof RangedWeaponItem || item instanceof TridentItem) {
                 // Weapon modifiers
-                if (crystals.contains(earth) && crystals.contains(fire)) {
-                    // Attack bonus
-                    return new Pair<>(
-                            EntityAttributes.ATTACK_DAMAGE.getId(),
-                            new EntityAttributeModifier(
-                                    EntityAttributeModifiers.WEAPON_DAMAGE,
-                                    "Weapon Damage",
-                                    2*(target.getLevel()+1),  // 2-8
-                                    EntityAttributeModifier.Operation.ADDITION));
-                } else if (crystals.contains(water) && crystals.contains(earth)) {
-                    return new Pair<>(
-                            EntityAttributes.LUCK.getId(),
-                            new EntityAttributeModifier(
-                                    EntityAttributeModifiers.LUCK,
-                                    "Looting",
-                                    target.getLevel()+1,  // 1-4
-                                    EntityAttributeModifier.Operation.ADDITION));
+                switch (modifier) {
+                    case FIRE_EARTH:
+                        return new Pair<>(
+                                EntityAttributes.ATTACK_DAMAGE.getId(),
+                                new EntityAttributeModifier(
+                                        EntityAttributeModifiers.WEAPON_DAMAGE,
+                                        "Weapon Damage",
+                                        target.getLevel()+1,  // 2-8
+                                        EntityAttributeModifier.Operation.ADDITION));
+                    case FIRE_WIND:
+                        return new Pair<>(
+                                EntityAttributes.ATTACK_DAMAGE.getId(),
+                                new EntityAttributeModifier(
+                                        EntityAttributeModifiers.WEAPON_DAMAGE,
+                                        "Weapon Damage",
+                                        .2*target.getLevel()+1,  // 1.2-1.8
+                                        EntityAttributeModifier.Operation.MULTIPLY_BASE));
+                    case WATER_EARTH:
+                        return new Pair<>(
+                                EntityAttributes.LUCK.getId(),
+                                new EntityAttributeModifier(
+                                        EntityAttributeModifiers.LUCK,
+                                        "Looting",
+                                        target.getLevel()+1,  // 1-4
+                                        EntityAttributeModifier.Operation.ADDITION));
                 }
             } else if (item instanceof ToolItem) {
                 // Tool modifiers
-                if (crystals.contains(water) && crystals.contains(earth)) {
-                    return new Pair<>(
-                            EntityAttributes.LUCK.getId(),
-                            new EntityAttributeModifier(
-                                    EntityAttributeModifiers.LUCK,
-                                    "Fortune",
-                                    target.getLevel()+1,  // 1-4
-                                    EntityAttributeModifier.Operation.ADDITION));
+                switch (modifier) {
+                    case WATER_EARTH:
+                        return new Pair<>(
+                                EntityAttributes.LUCK.getId(),
+                                new EntityAttributeModifier(
+                                        EntityAttributeModifiers.LUCK,
+                                        "Fortune",
+                                        target.getLevel()+1,  // 1-4
+                                        EntityAttributeModifier.Operation.ADDITION));
+
                 }
             } else if (item instanceof ITrinket) {
                 // Trinket modifiers
-                if (crystals.size() == 1 && crystals.contains(water)){
-                    return new Pair<>(
-                            EntityAttributes.MAX_HEALTH.getId(),
-                            new EntityAttributeModifier(
-                                    EntityAttributeModifiers.MAX_HEALTH,
-                                    "Health",
-                                    5*(target.getLevel()+1),  // 2-8
-                                    EntityAttributeModifier.Operation.ADDITION));
-                } else if (crystals.contains(water) && crystals.contains(earth)) {
-                    return new Pair<>(
-                            EntityAttributes.LUCK.getId(),
-                            new EntityAttributeModifier(
-                                    EntityAttributeModifiers.LUCK,
-                                    "Luck",
-                                    target.getLevel()+1,  // 1-4
-                                    EntityAttributeModifier.Operation.ADDITION));
+                switch (modifier) {
+                    case WATER_WATER:
+                        return new Pair<>(
+                                EntityAttributes.MAX_HEALTH.getId(),
+                                new EntityAttributeModifier(
+                                        EntityAttributeModifiers.MAX_HEALTH,
+                                        "Health",
+                                        5*(target.getLevel()+1),  // 2-8
+                                        EntityAttributeModifier.Operation.ADDITION));
+                    case WATER_EARTH:
+                        return new Pair<>(
+                                EntityAttributes.LUCK.getId(),
+                                new EntityAttributeModifier(
+                                        EntityAttributeModifiers.LUCK,
+                                        "Luck",
+                                        target.getLevel()+1,  // 1-4
+                                        EntityAttributeModifier.Operation.ADDITION));
                 }
             }
         }
         return null;
     }
 
-    private Item getTargetItem(FusionTarget target) {
-        // Stone or Crystal based on inputs
-        switch (target.getType()) {
-
-            case UPGRADE_CRYSTAL:
-                // All crystals the same?
-                Set<CrystalItem> items = uniqueCrystals.stream().map(i -> (CrystalItem)i).collect(Collectors.toSet());
-
-                if (items.size() == 1) {
-                    CrystalItem crystalItem = items.stream().findFirst().get();
-
-                    if (ComposingItems.SMALL_EARTH_CRYSTAL.equals(crystalItem)) {
-                        return ComposingItems.MEDIUM_EARTH_CRYSTAL;
-                    } else if (ComposingItems.SMALL_WATER_CRYSTAL.equals(crystalItem)) {
-                        return ComposingItems.MEDIUM_WATER_CRYSTAL;
-                    } else if (ComposingItems.SMALL_WIND_CRYSTAL.equals(crystalItem)) {
-                        return ComposingItems.MEDIUM_WIND_CRYSTAL;
-                    } else if (ComposingItems.SMALL_FIRE_CRYSTAL.equals(crystalItem)) {
-                        return ComposingItems.MEDIUM_FIRE_CRYSTAL;
-                    } else if (ComposingItems.MEDIUM_EARTH_CRYSTAL.equals(crystalItem)) {
-                        return ComposingItems.LARGE_EARTH_CRYSTAL;
-                    } else if (ComposingItems.MEDIUM_WATER_CRYSTAL.equals(crystalItem)) {
-                        return ComposingItems.LARGE_WATER_CRYSTAL;
-                    } else if (ComposingItems.MEDIUM_WIND_CRYSTAL.equals(crystalItem)) {
-                        return ComposingItems.LARGE_WIND_CRYSTAL;
-                    } else if (ComposingItems.MEDIUM_FIRE_CRYSTAL.equals(crystalItem)) {
-                        return ComposingItems.LARGE_FIRE_CRYSTAL;
-                    }
-                } else if (items.size() == 3) {
-                    // Get the crystal not in here one tier higher
-                    // E.g. small water, earth and wind gives medium fire
-                    if (items.contains(ComposingItems.SMALL_WATER_CRYSTAL) && items.contains(ComposingItems.SMALL_EARTH_CRYSTAL) && items.contains(ComposingItems.SMALL_FIRE_CRYSTAL)) {
-                        return ComposingItems.MEDIUM_WIND_CRYSTAL;
-                    } else if (items.contains(ComposingItems.SMALL_WATER_CRYSTAL) && items.contains(ComposingItems.SMALL_EARTH_CRYSTAL) && items.contains(ComposingItems.SMALL_WIND_CRYSTAL)) {
-                        return ComposingItems.MEDIUM_FIRE_CRYSTAL;
-                    } else if (items.contains(ComposingItems.SMALL_WATER_CRYSTAL) && items.contains(ComposingItems.SMALL_WIND_CRYSTAL) && items.contains(ComposingItems.SMALL_FIRE_CRYSTAL)) {
-                        return ComposingItems.MEDIUM_EARTH_CRYSTAL;
-                    } else if (items.contains(ComposingItems.SMALL_WIND_CRYSTAL) && items.contains(ComposingItems.SMALL_EARTH_CRYSTAL) && items.contains(ComposingItems.SMALL_FIRE_CRYSTAL)) {
-                        return ComposingItems.MEDIUM_WATER_CRYSTAL;
-                    } else if (items.contains(ComposingItems.MEDIUM_WATER_CRYSTAL) && items.contains(ComposingItems.MEDIUM_EARTH_CRYSTAL) && items.contains(ComposingItems.MEDIUM_FIRE_CRYSTAL)) {
-                        return ComposingItems.LARGE_WIND_CRYSTAL;
-                    } else if (items.contains(ComposingItems.MEDIUM_WATER_CRYSTAL) && items.contains(ComposingItems.MEDIUM_EARTH_CRYSTAL) && items.contains(ComposingItems.MEDIUM_WIND_CRYSTAL)) {
-                        return ComposingItems.LARGE_FIRE_CRYSTAL;
-                    } else if (items.contains(ComposingItems.MEDIUM_WATER_CRYSTAL) && items.contains(ComposingItems.MEDIUM_WIND_CRYSTAL) && items.contains(ComposingItems.MEDIUM_FIRE_CRYSTAL)) {
-                        return ComposingItems.LARGE_EARTH_CRYSTAL;
-                    } else if (items.contains(ComposingItems.MEDIUM_WIND_CRYSTAL) && items.contains(ComposingItems.MEDIUM_EARTH_CRYSTAL) && items.contains(ComposingItems.MEDIUM_FIRE_CRYSTAL)) {
-                        return ComposingItems.LARGE_WATER_CRYSTAL;
-                    }
-                } else {
-                    throw new AssertionError("Should not happen");
-                }
-                
-            case UPGRADE_STONE:
-                StoneItem stone = uniqueStones.stream().filter(i -> i instanceof StoneItem).map(i -> (StoneItem)i).findFirst().get();
-                if (stone == ComposingItems.BLESSING_STONE) {
-                    return ComposingItems.SOUL_STONE;
-                } else if (stone == ComposingItems.SOUL_STONE) {
-                    return ComposingItems.HOLY_STONE;
-                } else {
-                    throw new AssertionError("Should not happen");
-                }
-            default:
-                throw new AssertionError("Should not happen");
-        }
+    public void tempCraft() {
+        craft();
     }
 
     private void craft() {
-        FusionTarget target = getFusionTarget();
-        if (target.getType() != FusionType.INVALID) {
-            if (rand.nextDouble() <= target.getChance()) {
-                ItemStack stackToSpawn;
+        if (!world.isClient) {
+            FusionTarget target = getFusionTarget();
+            if (target != null) {
+                if (rand.nextDouble() <= target.getChance()) {
+                    ItemStack stackToSpawn;
 
-                if (target.getType() == FusionType.UPGRADE_TOOL) {
-                    Pair<String, EntityAttributeModifier> modifier = getTargetModifier(target);
-                    if (modifier == null) {
-                        return;
+                    if (target.getType() == FusionType.UPGRADE_TOOL) {
+                        Pair<String, EntityAttributeModifier> modifier = getTargetModifier(target);
+                        if (modifier == null) {
+                            return;
+                        }
+                        tool.addAttributeModifier(modifier.getFirst(), modifier.getSecond(), null);
+                        stackToSpawn = tool;
+                        tool = null;
+                    } else if (target.getType() == FusionType.UPGRADE_ITEM) {
+                        stackToSpawn = new ItemStack(target.getItemTarget(), 1);
+                    } else {
+                        throw new AssertionError("Should not happen");
                     }
-                    tool.addAttributeModifier(modifier.getFirst(), modifier.getSecond(), null);
-                    stackToSpawn = tool;
-                    tool = null;
-                } else if (target.getType() == FusionType.UPGRADE_CRYSTAL || target.getType() == FusionType.UPGRADE_STONE) {
-                    stackToSpawn = new ItemStack(getTargetItem(target), 1);
-                } else {
-                    throw new AssertionError("Should not happen");
+
+                    ItemEntity e = new ItemEntity(world, pos.getX() + .5, pos.getY() + 1.1, pos.getZ() + .5, stackToSpawn);
+                    e.setVelocity(0, 0.1, 0);
+                    world.spawnEntity(e);
                 }
 
-                ItemEntity e = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stackToSpawn);
-                e.setVelocity(0, 1, 0);
-                world.spawnEntity(e);
+                // Clear items used
+                slot1 = null;
+                slot2 = null;
+                slot3 = null;
             }
-
-            // Clear items used
-            slot1 = null;
-            slot2 = null;
-            slot3 = null;
         }
     }
 

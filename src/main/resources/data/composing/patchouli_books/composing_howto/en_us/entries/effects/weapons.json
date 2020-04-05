@@ -17,6 +17,14 @@
     },
     {
       "type": "composing",
+      "slot1": "composing:small_earth_crystal,composing:medium_earth_crystal,composing:large_earth_crystal,composing:large_earth_crystal",
+      "slot2": "composing:blessing_stone,composing:blessing_stone,composing:soul_stone,composing:holy_stone",
+      "slot3": "composing:small_wind_crystal,composing:medium_wind_crystal,composing:large_wind_crystal,composing:large_wind_crystal",
+      "center": "minecraft:diamond_sword",
+      "text": "Attack damage (mult)"
+    },
+    {
+      "type": "composing",
       "slot1": "composing:small_water_crystal,composing:medium_water_crystal,composing:large_water_crystal,composing:large_water_crystal",
       "slot2": "composing:blessing_stone,composing:blessing_stone,composing:soul_stone,composing:holy_stone",
       "slot3": "composing:small_water_crystal,composing:medium_water_crystal,composing:large_water_crystal,composing:large_water_crystal",

@@ -31,8 +31,8 @@ public class ComposingItems {
 	public static final CrystalItem LARGE_WATER_CRYSTAL = register(new CrystalItem(new Item.Settings().group(Composing.ITEMGROUP), WATER, 2), "large_water_crystal");
 	
 	public static final StoneItem BLESSING_STONE = register(new StoneItem(new Item.Settings().group(Composing.ITEMGROUP), 0), "blessing_stone");
-	public static final StoneItem SOUL_STONE = register(new StoneItem(new Item.Settings().group(Composing.ITEMGROUP), 0), "soul_stone");
-	public static final StoneItem HOLY_STONE = register(new StoneItem(new Item.Settings().group(Composing.ITEMGROUP), 0), "holy_stone");
+	public static final StoneItem SOUL_STONE = register(new StoneItem(new Item.Settings().group(Composing.ITEMGROUP), 1), "soul_stone");
+	public static final StoneItem HOLY_STONE = register(new StoneItem(new Item.Settings().group(Composing.ITEMGROUP), 2), "holy_stone");
 
 	public static final BlockItem COMPOSING_TABLE = register(new BlockItem(ComposingBlocks.COMPOSING_TABLE, new Item.Settings().group(Composing.ITEMGROUP)), "composing_table");
 	
