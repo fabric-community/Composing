@@ -1,30 +1,44 @@
 package io.teamblue.composing.blockentity;
 
-import com.mojang.datafixers.util.Pair;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
 import dev.emi.trinkets.api.ITrinket;
 import io.teamblue.composing.Composing;
 import io.teamblue.composing.api.CrystalElement;
-import io.teamblue.composing.item.ComposingItems;
 import io.teamblue.composing.item.CrystalItem;
 import io.teamblue.composing.item.StoneItem;
-import io.teamblue.composing.util.fusion.*;
-import net.minecraft.block.Blocks;
+import io.teamblue.composing.util.fusion.EntityAttributeModifiers;
+import io.teamblue.composing.util.fusion.FusionModifier;
+import io.teamblue.composing.util.fusion.FusionTarget;
+import io.teamblue.composing.util.fusion.FusionType;
+import io.teamblue.composing.util.fusion.ModifierEntry;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.*;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.ToolItem;
+import net.minecraft.item.TridentItem;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-
-
-import java.util.*;
-import java.util.stream.Collectors;
+import net.fabricmc.fabric.api.util.NbtType;
 
 public class ComposingTableBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
     public Item slot1;
@@ -305,6 +319,18 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                     ModifierEntry modifier = getTargetModifier(target);
                     if (modifier == null) {
                         return;
+                    }
+                    CompoundTag toolTag = tool.getOrCreateTag();
+                    if (toolTag.contains("AttributeModifiers", NbtType.LIST)) {
+                        ListTag modTag = toolTag.getList("AttributeModifiers", NbtType.COMPOUND);
+                        ListTag newModTag = new ListTag();
+                        for (Tag tag : modTag) {
+                            CompoundTag compound = (CompoundTag)tag;
+                            if (!compound.getUuid("UUID").equals(modifier.modifier.getId())) {
+                                newModTag.add(tag);
+                            }
+                        }
+                        toolTag.put("AttributeModifiers", newModTag);
                     }
                     tool.addAttributeModifier(modifier.name, modifier.modifier, modifier.slot);
                     stackToSpawn = tool.copy();
