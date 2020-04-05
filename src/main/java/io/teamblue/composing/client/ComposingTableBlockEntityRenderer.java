@@ -31,6 +31,8 @@ public class ComposingTableBlockEntityRenderer extends BlockEntityRenderer<Compo
 		matrices.scale(0.3f, 0.3f, 0.3f);
 		MinecraftClient.getInstance().getItemRenderer().renderItem(blockEntity.tool, ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
 		matrices.scale(0.7f, 0.7f, 0.7f);
+
+		// TODO: Make these render
 		matrices.translate(0, 1.6, 0);
 		MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(blockEntity.slot1), ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
 		matrices.translate(-1.6, -3.2, 0);

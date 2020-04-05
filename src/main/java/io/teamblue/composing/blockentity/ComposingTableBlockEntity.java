@@ -293,7 +293,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
         craft();
     }
 
-    private void craft() {
+    public void craft() {
         FusionTarget target = getFusionTarget();
         if (target != null) {
             if (!world.isClient && rand.nextDouble() <= target.getChance()) {
@@ -305,7 +305,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                         return;
                     }
                     tool.addAttributeModifier(modifier.getFirst(), modifier.getSecond(), null);
-                    stackToSpawn = tool;
+                    stackToSpawn = tool.copy();
                 } else if (target.getType() == FusionType.UPGRADE_ITEM) {
                     stackToSpawn = new ItemStack(target.getItemTarget(), 1);
                 } else {

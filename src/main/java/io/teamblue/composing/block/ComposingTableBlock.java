@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 public class ComposingTableBlock extends BlockWithEntity {
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
 
+    // TODO: Fix these to match the model
     private double[] slot1Area = new double[] { 0, 0, 0.33, 0.33 };
     private double[] slot2Area = new double[] { 0.33, 0, 0.66, 0.33 };
     private double[] slot3Area = new double[] { 0.66, 0, 1, 0.33};
@@ -52,28 +53,13 @@ public class ComposingTableBlock extends BlockWithEntity {
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (hit.getSide() == Direction.UP) {
 
+            // TODO: Rotation support
             Vec3d hitPos = hit.getPos().subtract(new Vec3d(hit.getBlockPos()));
-
-            System.out.println("Clicked at " + hitPos);
-
-            switch (state.get(FACING)) {
-                // Set areas
-                case NORTH:
-                case SOUTH:
-                case WEST:
-                case EAST:
-                    break;
-                default:
-                    return ActionResult.PASS;
-            }
 
             ComposingTableBlockEntity be = (ComposingTableBlockEntity) world.getBlockEntity(pos);
             ItemStack playerItemStack = (hand == Hand.MAIN_HAND) ? player.getMainHandStack() : player.getOffHandStack();
 
-            if (playerItemStack.getItem() == Items.STICK) {
-                be.tempCraft();
-            }
-            else if (centerArea[0] < hitPos.getX() && hitPos.getX() < centerArea[2] && centerArea[1] < hitPos.getZ() &&  hitPos.getZ() < centerArea[3]) {
+            if (centerArea[0] < hitPos.getX() && hitPos.getX() < centerArea[2] && centerArea[1] < hitPos.getZ() &&  hitPos.getZ() < centerArea[3]) {
                 // Center slot
                 if (player.isSneaking()) {
                     if (!be.tool.isEmpty()) {
@@ -144,6 +130,15 @@ public class ComposingTableBlock extends BlockWithEntity {
             }
         }
         return ActionResult.PASS;
+    }
+
+    @Override
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean moved) {
+        if (world.isReceivingRedstonePower(pos)) {
+            ComposingTableBlockEntity be = (ComposingTableBlockEntity) world.getBlockEntity(pos);
+            be.craft();
+        }
+        super.neighborUpdate(state, world, pos, block, neighborPos, moved);
     }
 
     private boolean validComposeUtil(ItemStack playerItemStack) {
