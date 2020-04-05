@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "composing:holy_stone",
+    "composing:soul_stone",
+    "composing:blessing_stone"
+  ]
+}

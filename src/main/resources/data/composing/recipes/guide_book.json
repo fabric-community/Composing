@@ -2,7 +2,7 @@
   "type": "composing:guide_book",
   "ingredients": [
     { "item": "minecraft:book" },
-    { "tag": "composing:small_crystal" }
+    { "tag": "composing:small_crystals" }
   ],
   "result": {
     "item": "patchouli:guide_book",

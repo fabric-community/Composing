@@ -11,7 +11,6 @@ import io.teamblue.composing.util.fusion.FusionTarget;
 import io.teamblue.composing.util.fusion.FusionType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.*;

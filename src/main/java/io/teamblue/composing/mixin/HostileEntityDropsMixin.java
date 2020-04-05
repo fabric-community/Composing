@@ -2,6 +2,7 @@ package io.teamblue.composing.mixin;
 
 import io.teamblue.composing.Composing;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -31,8 +32,8 @@ abstract public class HostileEntityDropsMixin extends Entity {
 
     @Inject(method = "drop", at = @At(value="INVOKE", target = "Lnet/minecraft/entity/LivingEntity;dropLoot(Lnet/minecraft/entity/damage/DamageSource;Z)V"))
     void extraLootTable(DamageSource source, CallbackInfo ci) {
-        if ((Entity)this instanceof HostileEntity) {
-            Identifier identifier = new Identifier(Composing.MODID, "entities/hostile");  // this.getLootTable();
+        if (this.getType().getCategory() == EntityCategory.MONSTER) {
+            Identifier identifier = new Identifier(Composing.MODID, "entities/crystal_drops");  // this.getLootTable();
             LootTable lootTable = this.world.getServer().getLootManager().getSupplier(identifier);
             LootContext.Builder builder = this.getLootContextBuilder(source.getAttacker() instanceof PlayerEntity, source);
             lootTable.dropLimited(builder.build(LootContextTypes.ENTITY), this::dropStack);
