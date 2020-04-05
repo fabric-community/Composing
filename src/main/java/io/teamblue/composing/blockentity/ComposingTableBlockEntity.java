@@ -203,7 +203,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.ARMOR,
                                         "Armor",
-                                        5*(target.getLevel()+1),  // 2-8
+                                        5*(target.getLevel()+1),  // 5-20
                                         EntityAttributeModifier.Operation.ADDITION));
                     case WIND_EARTH:
                         return new Pair<>(
@@ -211,7 +211,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.ARMOR_TOUGHNESS,
                                         "Armor Toughness",
-                                        5*(target.getLevel()+1),  // 2-8
+                                        5*(target.getLevel()+1),  // 5-20
                                         EntityAttributeModifier.Operation.ADDITION));
                     case WATER_WATER:
                         return new Pair<>(
@@ -219,12 +219,13 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.MAX_HEALTH,
                                         "Health",
-                                        5*(target.getLevel()+1),  // 2-8
+                                        5*(target.getLevel()+1),  // 5-20
                                         EntityAttributeModifier.Operation.ADDITION));
                 }
             } else if (item instanceof SwordItem || item instanceof RangedWeaponItem || item instanceof TridentItem) {
                 // Weapon modifiers
                 switch (modifier) {
+                    // TODO: These overwrite existing damage???
                     case FIRE_EARTH:
                         return new Pair<>(
                                 EntityAttributes.ATTACK_DAMAGE.getId(),
@@ -293,36 +294,34 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
     }
 
     private void craft() {
-        if (!world.isClient) {
-            FusionTarget target = getFusionTarget();
-            if (target != null) {
-                if (rand.nextDouble() <= target.getChance()) {
-                    ItemStack stackToSpawn;
+        FusionTarget target = getFusionTarget();
+        if (target != null) {
+            if (!world.isClient && rand.nextDouble() <= target.getChance()) {
+                ItemStack stackToSpawn;
 
-                    if (target.getType() == FusionType.UPGRADE_TOOL) {
-                        Pair<String, EntityAttributeModifier> modifier = getTargetModifier(target);
-                        if (modifier == null) {
-                            return;
-                        }
-                        tool.addAttributeModifier(modifier.getFirst(), modifier.getSecond(), null);
-                        stackToSpawn = tool;
-                        tool = null;
-                    } else if (target.getType() == FusionType.UPGRADE_ITEM) {
-                        stackToSpawn = new ItemStack(target.getItemTarget(), 1);
-                    } else {
-                        throw new AssertionError("Should not happen");
+                if (target.getType() == FusionType.UPGRADE_TOOL) {
+                    Pair<String, EntityAttributeModifier> modifier = getTargetModifier(target);
+                    if (modifier == null) {
+                        return;
                     }
-
-                    ItemEntity e = new ItemEntity(world, pos.getX() + .5, pos.getY() + 1.1, pos.getZ() + .5, stackToSpawn);
-                    e.setVelocity(0, 0.1, 0);
-                    world.spawnEntity(e);
+                    tool.addAttributeModifier(modifier.getFirst(), modifier.getSecond(), null);
+                    stackToSpawn = tool;
+                } else if (target.getType() == FusionType.UPGRADE_ITEM) {
+                    stackToSpawn = new ItemStack(target.getItemTarget(), 1);
+                } else {
+                    throw new AssertionError("Should not happen");
                 }
 
-                // Clear items used
-                slot1 = null;
-                slot2 = null;
-                slot3 = null;
+                ItemEntity e = new ItemEntity(world, pos.getX() + .5, pos.getY() + 1.1, pos.getZ() + .5, stackToSpawn);
+                e.setVelocity(0, 0.1, 0);
+                world.spawnEntity(e);
             }
+
+            // Clear items
+            tool = ItemStack.EMPTY;
+            slot1 = null;
+            slot2 = null;
+            slot3 = null;
         }
     }
 
