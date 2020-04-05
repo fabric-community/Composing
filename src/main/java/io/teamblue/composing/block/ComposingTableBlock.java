@@ -11,6 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
@@ -20,19 +21,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 public class ComposingTableBlock extends BlockWithEntity {
-    public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
+    public static final DirectionProperty FACING = Properties.FACING;
 
     // TODO: Fix these to match the model
-    private double[] slot1Area = new double[] { 0, 0, 0.33, 0.33 };
+    private double[] slot1Area = new double[] { 0, 0.33, 0.33, 0.66 };
     private double[] slot2Area = new double[] { 0.33, 0, 0.66, 0.33 };
-    private double[] slot3Area = new double[] { 0.66, 0, 1, 0.33};
+    private double[] slot3Area = new double[] { 0.66, 0.33, 1, 0.66};
     private double[] centerArea = new double[] { 0.33, 0.33, 0.66, 0.66 };
 
     protected ComposingTableBlock() {
-        super(Settings.of(Material.STONE));
+        super(Settings.of(Material.STONE).strength(2.0f, 6.0f));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
     }
 
@@ -51,6 +53,14 @@ public class ComposingTableBlock extends BlockWithEntity {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (world.isClient()) {
+            if (hit.getSide() == Direction.UP) {
+                return ActionResult.PASS;
+            } else {
+                return ActionResult.FAIL;
+            }
+        }
+
         if (hit.getSide() == Direction.UP) {
 
             // TODO: Rotation support
@@ -114,7 +124,6 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (be.slot3 != null) {
                         // Remove item
-                        System.out.println("dropping item from 3");
                         ItemEntity e = new ItemEntity(world, pos.getX() + slot3Area[0], pos.getY() + 1.1, pos.getZ() + slot3Area[1], new ItemStack(be.slot3));
                         e.setVelocity(0, .1, 0);
                         world.spawnEntity(e);
@@ -127,18 +136,23 @@ public class ComposingTableBlock extends BlockWithEntity {
                         be.slot3 = playerItemStack.split(1).getItem();
                     }
                 }
+            } else {
+                return ActionResult.PASS;
             }
+            be.markDirty();
+            be.sync();
+            return ActionResult.SUCCESS;
         }
         return ActionResult.PASS;
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean moved) {
-        if (world.isReceivingRedstonePower(pos)) {
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState neighborState, IWorld world, BlockPos pos, BlockPos neighborPos) {
+        if (((World)world).isReceivingRedstonePower(pos)) {
             ComposingTableBlockEntity be = (ComposingTableBlockEntity) world.getBlockEntity(pos);
             be.craft();
         }
-        super.neighborUpdate(state, world, pos, block, neighborPos, moved);
+        return super.getStateForNeighborUpdate(state, facing, neighborState, world, pos, neighborPos);
     }
 
     private boolean validComposeUtil(ItemStack playerItemStack) {

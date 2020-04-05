@@ -1,5 +1,8 @@
 {
   "variants": {
-    "": { "model": "composing:block/composing_table" }
+    "facing=north": { "model": "composing:block/composing_table" },
+    "facing=south": { "model": "composing:block/composing_table", "y": 180 },
+    "facing=west": { "model": "composing:block/composing_table", "y": 270 },
+    "facing=east": { "model": "composing:block/composing_table", "y": 90 }
   }
 }

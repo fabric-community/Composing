@@ -29,16 +29,19 @@ public class ComposingTableBlockEntityRenderer extends BlockEntityRenderer<Compo
 		matrices.translate(0.5, 33/32d, 0.5); // have to move the item an extra half-voxel up.
 		matrices.multiply(MAKE_ITEM_SIDEWAYS);
 		matrices.scale(0.3f, 0.3f, 0.3f);
-		MinecraftClient.getInstance().getItemRenderer().renderItem(blockEntity.tool, ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
+		if (!blockEntity.tool.isEmpty())
+			MinecraftClient.getInstance().getItemRenderer().renderItem(blockEntity.tool, ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
 		matrices.scale(0.7f, 0.7f, 0.7f);
 
-		// TODO: Make these render
-		matrices.translate(0, 1.6, 0);
-		MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(blockEntity.slot1), ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
-		matrices.translate(-1.6, -3.2, 0);
-		MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(blockEntity.slot2), ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
-		matrices.translate(3.2, 0, 0);
-		MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(blockEntity.slot3), ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
+		matrices.translate(-1.6, 0, 0);
+		if (blockEntity.slot1 != null)
+			MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(blockEntity.slot1), ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
+		matrices.translate(1.6, -1.6, 0);
+		if (blockEntity.slot2 != null)
+			MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(blockEntity.slot2), ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
+		matrices.translate(1.6, 1.6, 0);
+		if (blockEntity.slot3 != null)
+			MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(blockEntity.slot3), ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
 		matrices.pop();
 	}
 

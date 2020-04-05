@@ -1,11 +1,11 @@
 {
   "name": "Upgrading",
-  "icon": "composing:large_water_crystal",
+  "icon": "composing:large_fire_crystal",
   "category": "basics",
   "pages": [
     {
       "type": "text",
-      "text": "Crystals and stones can be upgraded. If the chance is less than 100%, there's a chance the items used are voided. The items in the center are the results on these pages."
+      "text": "Crystals and stones can be upgraded. If the chance is less than 100%, the items used are voided upon failure. The items in the center are the results on these pages."
     },
     {
       "type": "composing",

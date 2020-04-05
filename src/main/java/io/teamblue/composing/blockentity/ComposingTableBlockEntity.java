@@ -7,11 +7,9 @@ import io.teamblue.composing.api.CrystalElement;
 import io.teamblue.composing.item.ComposingItems;
 import io.teamblue.composing.item.CrystalItem;
 import io.teamblue.composing.item.StoneItem;
-import io.teamblue.composing.util.fusion.EntityAttributeModifiers;
-import io.teamblue.composing.util.fusion.FusionModifier;
-import io.teamblue.composing.util.fusion.FusionTarget;
-import io.teamblue.composing.util.fusion.FusionType;
+import io.teamblue.composing.util.fusion.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -184,12 +182,8 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
         return null;
     }
 
-
-    // TODO
-    // - Get available modifiers for item
-    // - If invalid, return null
-    // - If valid, return modifier matching crystals
-    private Pair<String, EntityAttributeModifier> getTargetModifier(FusionTarget target) {
+    // TODO: Add more EAMs
+    private ModifierEntry getTargetModifier(FusionTarget target) {
         FusionModifier modifier = target.getModifier();
 
         if (!tool.isEmpty()) {
@@ -198,113 +192,121 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                 // Armor modifiers
                 switch(modifier) {
                     case EARTH_EARTH:
-                        return new Pair<>(
+                        return new ModifierEntry(
                                 EntityAttributes.ARMOR.getId(),
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.ARMOR,
                                         "Armor",
-                                        5*(target.getLevel()+1),  // 5-20
-                                        EntityAttributeModifier.Operation.ADDITION));
+                                        target.getLevel()+1,  // 1-4
+                                        EntityAttributeModifier.Operation.ADDITION),
+                                getEquipmentSlot(item));
                     case WIND_EARTH:
-                        return new Pair<>(
+                        return new ModifierEntry(
                                 EntityAttributes.ARMOR_TOUGHNESS.getId(),
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.ARMOR_TOUGHNESS,
                                         "Armor Toughness",
-                                        5*(target.getLevel()+1),  // 5-20
-                                        EntityAttributeModifier.Operation.ADDITION));
+                                        target.getLevel()+1,  // 1-4
+                                        EntityAttributeModifier.Operation.ADDITION),
+                                getEquipmentSlot(item));
                     case WATER_WATER:
-                        return new Pair<>(
+                        return new ModifierEntry(
                                 EntityAttributes.MAX_HEALTH.getId(),
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.MAX_HEALTH,
                                         "Health",
-                                        5*(target.getLevel()+1),  // 5-20
-                                        EntityAttributeModifier.Operation.ADDITION));
+                                        target.getLevel()+1,  // 1-4
+                                        EntityAttributeModifier.Operation.ADDITION),
+                                getEquipmentSlot(item));
                 }
             } else if (item instanceof SwordItem || item instanceof RangedWeaponItem || item instanceof TridentItem) {
                 // Weapon modifiers
                 switch (modifier) {
                     // TODO: These overwrite existing damage???
                     case FIRE_EARTH:
-                        return new Pair<>(
+                        return new ModifierEntry(
                                 EntityAttributes.ATTACK_DAMAGE.getId(),
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.WEAPON_DAMAGE,
                                         "Weapon Damage",
                                         target.getLevel()+1,  // 2-8
-                                        EntityAttributeModifier.Operation.ADDITION));
-                    case FIRE_WIND:
-                        return new Pair<>(
+                                        EntityAttributeModifier.Operation.ADDITION),
+                                getEquipmentSlot(item));
+                    case WIND_EARTH:
+                        return new ModifierEntry(
                                 EntityAttributes.ATTACK_DAMAGE.getId(),
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.WEAPON_DAMAGE,
                                         "Weapon Damage",
                                         .2*target.getLevel()+1,  // 1.2-1.8
-                                        EntityAttributeModifier.Operation.MULTIPLY_BASE));
-                    case WATER_EARTH:
-                        return new Pair<>(
+                                        EntityAttributeModifier.Operation.MULTIPLY_TOTAL),
+                                getEquipmentSlot(item));
+                    case WATER_WATER:
+                        return new ModifierEntry(
                                 EntityAttributes.LUCK.getId(),
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.LUCK,
                                         "Looting",
                                         target.getLevel()+1,  // 1-4
-                                        EntityAttributeModifier.Operation.ADDITION));
+                                        EntityAttributeModifier.Operation.ADDITION),
+                                getEquipmentSlot(item));
                 }
             } else if (item instanceof ToolItem) {
                 // Tool modifiers
                 switch (modifier) {
                     case WATER_EARTH:
-                        return new Pair<>(
+                        return new ModifierEntry(
                                 EntityAttributes.LUCK.getId(),
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.LUCK,
                                         "Fortune",
                                         target.getLevel()+1,  // 1-4
-                                        EntityAttributeModifier.Operation.ADDITION));
+                                        EntityAttributeModifier.Operation.ADDITION),
+                                getEquipmentSlot(item));
 
                 }
             } else if (item instanceof ITrinket) {
                 // Trinket modifiers
                 switch (modifier) {
                     case WATER_WATER:
-                        return new Pair<>(
-                                EntityAttributes.MAX_HEALTH.getId(),
-                                new EntityAttributeModifier(
-                                        EntityAttributeModifiers.MAX_HEALTH,
-                                        "Health",
-                                        5*(target.getLevel()+1),  // 2-8
-                                        EntityAttributeModifier.Operation.ADDITION));
-                    case WATER_EARTH:
-                        return new Pair<>(
+                        return new ModifierEntry(
                                 EntityAttributes.LUCK.getId(),
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.LUCK,
                                         "Luck",
                                         target.getLevel()+1,  // 1-4
-                                        EntityAttributeModifier.Operation.ADDITION));
+                                        EntityAttributeModifier.Operation.ADDITION),
+                                null);
                 }
             }
         }
         return null;
     }
 
-    public void tempCraft() {
-        craft();
+    private EquipmentSlot getEquipmentSlot(Item item) {
+        if (item instanceof ArmorItem) {
+            return ((ArmorItem) item).getSlotType();
+        } else {
+            return EquipmentSlot.MAINHAND;
+        }
     }
 
     public void craft() {
+        if (world.isClient()) {
+            return;
+        }
+
         FusionTarget target = getFusionTarget();
         if (target != null) {
-            if (!world.isClient && rand.nextDouble() <= target.getChance()) {
+            if (rand.nextDouble() <= target.getChance()) {
                 ItemStack stackToSpawn;
 
                 if (target.getType() == FusionType.UPGRADE_TOOL) {
-                    Pair<String, EntityAttributeModifier> modifier = getTargetModifier(target);
+                    ModifierEntry modifier = getTargetModifier(target);
                     if (modifier == null) {
                         return;
                     }
-                    tool.addAttributeModifier(modifier.getFirst(), modifier.getSecond(), null);
+                    tool.addAttributeModifier(modifier.name, modifier.modifier, modifier.slot);
                     stackToSpawn = tool.copy();
                 } else if (target.getType() == FusionType.UPGRADE_ITEM) {
                     stackToSpawn = new ItemStack(target.getItemTarget(), 1);
@@ -312,16 +314,16 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                     throw new AssertionError("Should not happen");
                 }
 
-                ItemEntity e = new ItemEntity(world, pos.getX() + .5, pos.getY() + 1.1, pos.getZ() + .5, stackToSpawn);
-                e.setVelocity(0, 0.1, 0);
-                world.spawnEntity(e);
+                ItemScatterer.spawn(world, pos.getX(), pos.getY()+1, pos.getZ(), stackToSpawn);
+                tool = ItemStack.EMPTY;
             }
 
             // Clear items
-            tool = ItemStack.EMPTY;
             slot1 = null;
             slot2 = null;
             slot3 = null;
+            this.markDirty();
+            this.sync();
         }
     }
 

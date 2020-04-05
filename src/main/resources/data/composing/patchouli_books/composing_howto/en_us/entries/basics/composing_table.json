@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "For composing, a composing table is required."
+      "text": "For composing, a composing table is required. Once placed, items can be right-clicked in and these will appear visibly on the table. These items can also be shift-right-clicked with an empty hand to remove them."
     },
     {
       "type": "crafting",
