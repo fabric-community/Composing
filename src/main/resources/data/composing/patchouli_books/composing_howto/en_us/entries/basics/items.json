@@ -9,7 +9,33 @@
     },
     {
       "type": "spotlight",
-      "item": "composing:small_earth_crystal"
+      "item": "composing:small_earth_crystal",
+      "text": "Small crystals are used for Tier 1 composing, and can be combined into Medium crystals."
+    },
+    {
+      "type": "spotlight",
+      "item": "composing:medium_fire_crystal",
+      "text": "Medium crystals are used for Tier 2 composing, and can be combined into Large crystals."
+    },
+    {
+      "type": "spotlight",
+      "item": "composing:large_wind_crystal",
+      "text": "Large crystals are used for Tier 3 and Tier 4 composing. Tier 4 composing has a 50% chance of success."
+    },
+    {
+      "type": "spotlight",
+      "item": "composing:blessing_stone",
+      "text": "Blessing stones are used for Tier 1 and Tier 2 composing, and can be combined into Soul stones."
+    },
+    {
+      "type": "spotlight",
+      "item": "composing:soul_stone",
+      "text": "Soul stones are used for Tier 3 composing, and can be combined into Holy stones."
+    },
+    {
+      "type": "spotlight",
+      "item": "composing:holy_stone",
+      "text": "Holy stones are used for Tier 4 composing. Tier 4 composing has a 50% chance of success."
     }
   ]
 }

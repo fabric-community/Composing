@@ -12,8 +12,8 @@
       "conditions": [
         {
           "condition": "random_chance_with_looting",
-          "chance": 0.01,
-          "looting_multiplier": 0.005
+          "chance": 0.001,
+          "looting_multiplier": 0.0005
         }
       ],
       "entries": [
@@ -33,9 +33,19 @@
           "name": "composing:large_crystals"
         },
         {
-          "type": "tag",
-          "weight": 1,
-          "name": "composing:stones"
+          "type": "item",
+          "weight": 15,
+          "name": "composing:blessing_stone"
+        },
+        {
+          "type": "item",
+          "weight": 8,
+          "name": "composing:soul_stone"
+        },
+        {
+          "type": "item",
+          "weight": 3,
+          "name": "composing:holy_stone"
         }
       ]
     }
