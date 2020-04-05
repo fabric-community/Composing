@@ -12,25 +12,31 @@
       "conditions": [
         {
           "condition": "random_chance_with_looting",
-          "chance": 0.001,
-          "looting_multiplier": 0.0005
+          "chance": 0.01,
+          "looting_multiplier": 0.005
+        },
+        {
+          "condition": "killed_by_player"
         }
       ],
       "entries": [
         {
           "type": "tag",
           "weight": 20,
-          "name": "composing:small_crystals"
+          "name": "composing:small_crystals",
+          "expand": true
         },
         {
           "type": "tag",
           "weight": 10,
-          "name": "composing:medium_crystals"
+          "name": "composing:medium_crystals",
+          "expand": true
         },
         {
           "type": "tag",
           "weight": 5,
-          "name": "composing:large_crystals"
+          "name": "composing:large_crystals",
+          "expand": true
         },
         {
           "type": "item",
