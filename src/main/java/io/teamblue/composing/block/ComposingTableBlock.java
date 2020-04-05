@@ -154,21 +154,30 @@ public class ComposingTableBlock extends BlockWithEntity {
         Item i = stack.getItem();
         return i instanceof ToolItem || i instanceof RangedWeaponItem || i instanceof TridentItem || i instanceof ArmorItem || i instanceof ITrinket;
     }
+    
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+    	return BlockRenderType.MODEL;
+    }
 
     // Rotation utilities
 
+    @Override
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
+    @Override
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.rotate(mirror.getRotation(state.get(FACING)));
     }
 
+    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
+    @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
     }
