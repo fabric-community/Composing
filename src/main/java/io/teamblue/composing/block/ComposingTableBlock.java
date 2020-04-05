@@ -85,7 +85,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (!be.tool.isEmpty()) {
                         // Remove item
-                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getY(), be.tool.copy());
+                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getZ(), be.tool.copy());
                         //e.setVelocity(0, 1, 0);
                         world.spawnEntity(e);
                         be.tool = ItemStack.EMPTY;
@@ -101,7 +101,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (be.slot1 != null) {
                         // Remove item
-                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getY(), new ItemStack(be.slot1));
+                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getZ(), new ItemStack(be.slot1));
                         e.setVelocity(0, .1, 0);
                         world.spawnEntity(e);
                         be.slot1 = null;
@@ -118,7 +118,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (be.slot2 != null) {
                         // Remove item
-                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getY(), new ItemStack(be.slot2));
+                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getZ(), new ItemStack(be.slot2));
                         e.setVelocity(0, .1, 0);
                         world.spawnEntity(e);
                         be.slot2 = null;
@@ -135,7 +135,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (be.slot3 != null) {
                         // Remove item
-                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getY(), new ItemStack(be.slot3));
+                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getZ(), new ItemStack(be.slot3));
                         e.setVelocity(0, .1, 0);
                         world.spawnEntity(e);
                         be.slot3 = null;
