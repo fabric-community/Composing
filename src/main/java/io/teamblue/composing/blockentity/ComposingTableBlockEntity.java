@@ -8,6 +8,7 @@ import io.teamblue.composing.item.ComposingItems;
 import io.teamblue.composing.item.CrystalItem;
 import io.teamblue.composing.item.StoneItem;
 import io.teamblue.composing.util.fusion.*;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
@@ -222,7 +223,6 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
             } else if (item instanceof SwordItem || item instanceof RangedWeaponItem || item instanceof TridentItem) {
                 // Weapon modifiers
                 switch (modifier) {
-                    // TODO: These overwrite existing damage???
                     case FIRE_EARTH:
                         return new ModifierEntry(
                                 EntityAttributes.ATTACK_DAMAGE.getId(),
@@ -389,4 +389,16 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
 	public CompoundTag toClientTag(CompoundTag tag) {
 		return toTag(tag);
 	}
+
+    public void cleanAir() {
+        if (slot1 == Items.AIR) {
+            slot1 = null;
+        }
+        if (slot2 == Items.AIR) {
+            slot2 = null;
+        }
+        if (slot3 == Items.AIR) {
+            slot3 = null;
+        }
+    }
 }

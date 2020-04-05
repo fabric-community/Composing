@@ -27,7 +27,6 @@ import net.minecraft.world.World;
 public class ComposingTableBlock extends BlockWithEntity {
     public static final DirectionProperty FACING = Properties.FACING;
 
-    // TODO: Fix these to match the model
     private double[] slot1Area = new double[] { 0, 0.33, 0.33, 0.66 };
     private double[] slot2Area = new double[] { 0.33, 0, 0.66, 0.33 };
     private double[] slot3Area = new double[] { 0.66, 0.33, 1, 0.66};
@@ -63,10 +62,22 @@ public class ComposingTableBlock extends BlockWithEntity {
 
         if (hit.getSide() == Direction.UP) {
 
-            // TODO: Rotation support
             Vec3d hitPos = hit.getPos().subtract(new Vec3d(hit.getBlockPos()));
 
+            switch (state.get(FACING)) {
+                case WEST:
+                    hitPos = new Vec3d(1 - hitPos.getZ(), hitPos.getY(), hitPos.getX());
+                    break;
+                case SOUTH:
+                    hitPos = new Vec3d(1 - hitPos.getX(), hitPos.getY(), 1 - hitPos.getZ());
+                    break;
+                case EAST:
+                    hitPos = new Vec3d(hitPos.getZ(), hitPos.getY(), 1 - hitPos.getX());
+                    break;
+            }
+
             ComposingTableBlockEntity be = (ComposingTableBlockEntity) world.getBlockEntity(pos);
+            be.cleanAir();
             ItemStack playerItemStack = (hand == Hand.MAIN_HAND) ? player.getMainHandStack() : player.getOffHandStack();
 
             if (centerArea[0] < hitPos.getX() && hitPos.getX() < centerArea[2] && centerArea[1] < hitPos.getZ() &&  hitPos.getZ() < centerArea[3]) {
@@ -74,7 +85,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (!be.tool.isEmpty()) {
                         // Remove item
-                        ItemEntity e = new ItemEntity(world, pos.getX(), pos.getY() + 0.8, pos.getZ(), be.tool.copy());
+                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getY(), be.tool.copy());
                         //e.setVelocity(0, 1, 0);
                         world.spawnEntity(e);
                         be.tool = ItemStack.EMPTY;
@@ -90,7 +101,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (be.slot1 != null) {
                         // Remove item
-                        ItemEntity e = new ItemEntity(world, pos.getX() + slot1Area[0], pos.getY() + 1.1, pos.getZ() + slot3Area[1], new ItemStack(be.slot1));
+                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getY(), new ItemStack(be.slot1));
                         e.setVelocity(0, .1, 0);
                         world.spawnEntity(e);
                         be.slot1 = null;
@@ -107,7 +118,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (be.slot2 != null) {
                         // Remove item
-                        ItemEntity e = new ItemEntity(world, pos.getX() + slot2Area[0], pos.getY() + 1.1, pos.getZ() + slot2Area[1], new ItemStack(be.slot2));
+                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getY(), new ItemStack(be.slot2));
                         e.setVelocity(0, .1, 0);
                         world.spawnEntity(e);
                         be.slot2 = null;
@@ -124,7 +135,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (be.slot3 != null) {
                         // Remove item
-                        ItemEntity e = new ItemEntity(world, pos.getX() + slot3Area[0], pos.getY() + 1.1, pos.getZ() + slot3Area[1], new ItemStack(be.slot3));
+                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getY(), new ItemStack(be.slot3));
                         e.setVelocity(0, .1, 0);
                         world.spawnEntity(e);
                         be.slot3 = null;

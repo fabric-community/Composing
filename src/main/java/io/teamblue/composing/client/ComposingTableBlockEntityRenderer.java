@@ -9,9 +9,11 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Quaternion;
 
 import io.teamblue.composing.blockentity.ComposingTableBlockEntity;
+import net.minecraft.util.math.Vec3d;
 
 public class ComposingTableBlockEntityRenderer extends BlockEntityRenderer<ComposingTableBlockEntity> {
 
@@ -33,13 +35,40 @@ public class ComposingTableBlockEntityRenderer extends BlockEntityRenderer<Compo
 			MinecraftClient.getInstance().getItemRenderer().renderItem(blockEntity.tool, ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
 		matrices.scale(0.7f, 0.7f, 0.7f);
 
-		matrices.translate(-1.6, 0, 0);
+		Vec3d t1;
+		Vec3d t2;
+		Vec3d t3;
+		switch (blockEntity.getWorld().getBlockState(blockEntity.getPos()).get(Properties.FACING)) {
+			case NORTH:
+				t1 = new Vec3d(-1.6, 0, 0);
+				t2 = new Vec3d(1.6, -1.6, 0);
+				t3 = new Vec3d(1.6, 1.6, 0);
+				break;
+			case SOUTH:
+				t1 = new Vec3d(1.6, 0, 0);
+				t2 = new Vec3d(-1.6, 1.6, 0);
+				t3 = new Vec3d(-1.6, -1.6, 0);
+				break;
+			case WEST:
+				t1 = new Vec3d(0, 1.6, 0);
+				t2 = new Vec3d(-1.6, -1.6, 0);
+				t3 = new Vec3d(1.6, -1.6, 0);
+				break;
+			case EAST:
+				t1 = new Vec3d(0, -1.6, 0);
+				t2 = new Vec3d(1.6, 1.6, 0);
+				t3 = new Vec3d(-1.6, 1.6, 0);
+				break;
+			default:
+				throw new AssertionError("Should not happen!");
+		}
+		matrices.translate(t1.getX(), t1.getY(), t1.getZ());
 		if (blockEntity.slot1 != null)
 			MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(blockEntity.slot1), ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
-		matrices.translate(1.6, -1.6, 0);
+		matrices.translate(t2.getX(), t2.getY(), t2.getZ());
 		if (blockEntity.slot2 != null)
 			MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(blockEntity.slot2), ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
-		matrices.translate(1.6, 1.6, 0);
+		matrices.translate(t3.getX(), t3.getY(), t3.getZ());
 		if (blockEntity.slot3 != null)
 			MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(blockEntity.slot3), ModelTransformation.Mode.FIXED, upLight, overlay, matrices, vertexConsumers);
 		matrices.pop();
