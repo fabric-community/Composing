@@ -18,8 +18,11 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.PacketByteBuf;
 
 public class GuideBookRecipe extends ShapelessRecipe {
+	private String group;
+
 	public GuideBookRecipe(Identifier id, String group, ItemStack output, DefaultedList<Ingredient> input) {
 		super(id, group, output, input);
+		this.group = group;
 	}
 
 	@Override
@@ -75,15 +78,15 @@ public class GuideBookRecipe extends ShapelessRecipe {
 			return new GuideBookRecipe(identifier, string, itemStack, defaultedList);
 		}
 
-		public void write(PacketByteBuf packetByteBuf, GuideBookRecipe shapelessRecipe) {
-			packetByteBuf.writeString(shapelessRecipe.getGroup());
-			packetByteBuf.writeVarInt(shapelessRecipe.getPreviewInputs().size());
+		public void write(PacketByteBuf packetByteBuf, GuideBookRecipe recipe) {
+			packetByteBuf.writeString(recipe.group);
+			packetByteBuf.writeVarInt(recipe.getPreviewInputs().size());
 
-			for (Ingredient ingredient : shapelessRecipe.getPreviewInputs()) {
+			for (Ingredient ingredient : recipe.getPreviewInputs()) {
 				ingredient.write(packetByteBuf);
 			}
 
-			packetByteBuf.writeItemStack(shapelessRecipe.getOutput());
+			packetByteBuf.writeItemStack(recipe.getOutput());
 		}
 	}
 
