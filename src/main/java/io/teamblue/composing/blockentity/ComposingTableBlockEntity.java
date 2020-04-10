@@ -33,6 +33,8 @@ import net.minecraft.item.TridentItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.registry.Registry;
@@ -339,9 +341,11 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                 } else {
                     throw new AssertionError("Should not happen");
                 }
-
+                world.playSound(null, pos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1f, 1f);
                 ItemScatterer.spawn(world, pos.getX(), pos.getY()+1, pos.getZ(), stackToSpawn);
                 tool = ItemStack.EMPTY;
+            } else {
+                world.playSound(null, pos, SoundEvents.ENTITY_SPLASH_POTION_BREAK, SoundCategory.BLOCKS, 1f, 1f);
             }
 
             // Clear items

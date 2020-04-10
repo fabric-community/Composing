@@ -38,7 +38,7 @@ public class ComposingTableBlockEntityRenderer extends BlockEntityRenderer<Compo
 		Vec3d t1;
 		Vec3d t2;
 		Vec3d t3;
-		switch (blockEntity.getWorld().getBlockState(blockEntity.getPos()).get(Properties.FACING)) {
+		switch (blockEntity.getCachedState().get(Properties.FACING)) {
 			case NORTH:
 				t1 = new Vec3d(-1.6, 0, 0);
 				t2 = new Vec3d(1.6, -1.6, 0);

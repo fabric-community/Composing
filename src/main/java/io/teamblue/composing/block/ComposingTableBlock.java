@@ -84,11 +84,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 // Center slot
                 if (player.isSneaking()) {
                     if (!be.tool.isEmpty()) {
-                        // Remove item
-                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getZ(), be.tool.copy());
-                        //e.setVelocity(0, 1, 0);
-                        world.spawnEntity(e);
-                        be.tool = ItemStack.EMPTY;
+                        givePlayerStack(world, player, hand, hit, pos, be.tool.copy());
                     }
                 } else  {
                     if (be.tool.isEmpty() && validComposeItem(playerItemStack)) {
@@ -101,9 +97,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (be.slot1 != null) {
                         // Remove item
-                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getZ(), new ItemStack(be.slot1));
-                        e.setVelocity(0, .1, 0);
-                        world.spawnEntity(e);
+                        givePlayerStack(world, player, hand, hit, pos, new ItemStack(be.slot1));
                         be.slot1 = null;
                     }
                 } else {
@@ -118,9 +112,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (be.slot2 != null) {
                         // Remove item
-                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getZ(), new ItemStack(be.slot2));
-                        e.setVelocity(0, .1, 0);
-                        world.spawnEntity(e);
+                        givePlayerStack(world, player, hand, hit, pos, new ItemStack(be.slot2));
                         be.slot2 = null;
                     }
                 } else {
@@ -135,9 +127,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (be.slot3 != null) {
                         // Remove item
-                        ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getZ(), new ItemStack(be.slot3));
-                        e.setVelocity(0, .1, 0);
-                        world.spawnEntity(e);
+                       givePlayerStack(world, player, hand, hit, pos, new ItemStack(be.slot3));
                         be.slot3 = null;
                     }
                 } else {
@@ -201,5 +191,17 @@ public class ComposingTableBlock extends BlockWithEntity {
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
+    }
+
+    private void givePlayerStack(World world, PlayerEntity player, Hand hand, BlockHitResult hit, BlockPos pos, ItemStack stack) {
+        ItemStack playerStack = player.getStackInHand(hand);
+        if (playerStack.isEmpty()) {
+            player.setStackInHand(hand, stack);
+        } else if (!player.inventory.insertStack(stack)) {
+            Vec3d hitPos = hit.getPos();
+            ItemEntity e = new ItemEntity(world, hitPos.getX() + hit.getBlockPos().getX(), pos.getY() + hit.getBlockPos().getY(), pos.getZ() + hit.getBlockPos().getZ(), stack);
+            e.setVelocity(0, .1, 0);
+            world.spawnEntity(e);
+        }
     }
 }
