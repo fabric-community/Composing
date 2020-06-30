@@ -2,7 +2,7 @@ plugins {
 	id "java"
 	id "eclipse"
 	id "idea"
-	id "fabric-loom" version "0.2.6-SNAPSHOT"
+	id "fabric-loom" version "0.4.29"
 	id "maven-publish"
 	id "com.jfrog.artifactory" version "4.9.0"
 }
@@ -27,6 +27,7 @@ repositories {
 	maven { url "https://server.bbkr.space/artifactory/libs-release" } // Cotton maven - home of Cotton projects
 	maven { url "https://maven.onyxstudios.dev" } // Onyx Studios maven - home of Cardinal Components
 	maven { url "https://jitpack.io" }
+	maven { url 'https://maven.blamejared.com' }
 }
 
 dependencies {
@@ -36,12 +37,12 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
-	modApi "com.github.emilyploszaj:Trinkets:${project.trinkets_version}"
+	modApi "com.github.emilyploszaj:trinkets:${project.trinkets_version}"
 
-	include "com.github.Vazkii:Patchouli:${project.patchouli_version}"
+	include "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 
 	// Only for testing!
-	modRuntime "com.github.Vazkii:Patchouli:${project.patchouli_version}"
+	modRuntime "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 }
 
 processResources {

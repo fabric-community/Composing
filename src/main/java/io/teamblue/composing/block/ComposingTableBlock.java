@@ -1,6 +1,6 @@
 package io.teamblue.composing.block;
 
-import dev.emi.trinkets.api.ITrinket;
+import dev.emi.trinkets.api.TrinketItem;
 import io.teamblue.composing.blockentity.ComposingTableBlockEntity;
 import io.teamblue.composing.item.CrystalItem;
 import io.teamblue.composing.item.StoneItem;
@@ -21,8 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 
 public class ComposingTableBlock extends BlockWithEntity {
     public static final DirectionProperty FACING = Properties.FACING;
@@ -43,10 +43,10 @@ public class ComposingTableBlock extends BlockWithEntity {
     }
 
     @Override
-    public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if (state.getBlock() != newState.getBlock()) {
             ((ComposingTableBlockEntity) world.getBlockEntity(pos)).dropItems();
-            super.onBlockRemoved(state, world, pos, newState, moved);
+            super.onStateReplaced(state, world, pos, newState, moved);
         }
     }
 
@@ -62,7 +62,7 @@ public class ComposingTableBlock extends BlockWithEntity {
 
         if (hit.getSide() == Direction.UP) {
 
-            Vec3d hitPos = hit.getPos().subtract(new Vec3d(hit.getBlockPos()));
+            Vec3d hitPos = hit.getPos().subtract(Vec3d.ofCenter(hit.getBlockPos()));
 
             switch (state.get(FACING)) {
                 case WEST:
@@ -148,7 +148,7 @@ public class ComposingTableBlock extends BlockWithEntity {
     }
 
     @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState neighborState, IWorld world, BlockPos pos, BlockPos neighborPos) {
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
         if (((World)world).isReceivingRedstonePower(pos)) {
             ComposingTableBlockEntity be = (ComposingTableBlockEntity) world.getBlockEntity(pos);
             be.craft();
@@ -163,7 +163,7 @@ public class ComposingTableBlock extends BlockWithEntity {
 
     private boolean validComposeItem(ItemStack stack) {
         Item i = stack.getItem();
-        return i instanceof ToolItem || i instanceof RangedWeaponItem || i instanceof TridentItem || i instanceof ArmorItem || i instanceof ITrinket;
+        return i instanceof ToolItem || i instanceof RangedWeaponItem || i instanceof TridentItem || i instanceof ArmorItem || i instanceof TrinketItem;
     }
     
     @Override

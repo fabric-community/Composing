@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import dev.emi.trinkets.api.ITrinket;
+import dev.emi.trinkets.api.TrinketItem;
 import io.teamblue.composing.Composing;
 import io.teamblue.composing.api.CrystalElement;
 import io.teamblue.composing.item.CrystalItem;
@@ -18,6 +18,7 @@ import io.teamblue.composing.util.fusion.FusionTarget;
 import io.teamblue.composing.util.fusion.FusionType;
 import io.teamblue.composing.util.fusion.ModifierEntry;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -210,7 +211,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                 switch(modifier) {
                     case EARTH_EARTH:
                         return new ModifierEntry(
-                                EntityAttributes.ARMOR.getId(),
+                                EntityAttributes.GENERIC_ARMOR,
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.ARMOR,
                                         "Armor",
@@ -219,7 +220,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                                 getEquipmentSlot(item));
                     case WIND_EARTH:
                         return new ModifierEntry(
-                                EntityAttributes.ARMOR_TOUGHNESS.getId(),
+                                EntityAttributes.GENERIC_ARMOR_TOUGHNESS,
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.ARMOR_TOUGHNESS,
                                         "Armor Toughness",
@@ -228,7 +229,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                                 getEquipmentSlot(item));
                     case WATER_WATER:
                         return new ModifierEntry(
-                                EntityAttributes.MAX_HEALTH.getId(),
+                                EntityAttributes.GENERIC_MAX_HEALTH,
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.MAX_HEALTH,
                                         "Health",
@@ -241,7 +242,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                 switch (modifier) {
                     case FIRE_EARTH:
                         return new ModifierEntry(
-                                EntityAttributes.ATTACK_DAMAGE.getId(),
+                                EntityAttributes.GENERIC_ATTACK_DAMAGE,
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.WEAPON_DAMAGE,
                                         "Weapon Damage",
@@ -250,7 +251,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                                 getEquipmentSlot(item));
                     case WIND_EARTH:
                         return new ModifierEntry(
-                                EntityAttributes.ATTACK_DAMAGE.getId(),
+                                EntityAttributes.GENERIC_ATTACK_DAMAGE,
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.WEAPON_DAMAGE,
                                         "Weapon Damage",
@@ -259,7 +260,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                                 getEquipmentSlot(item));
                     case WATER_WATER:
                         return new ModifierEntry(
-                                EntityAttributes.LUCK.getId(),
+                                EntityAttributes.GENERIC_LUCK,
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.LUCK,
                                         "Looting",
@@ -272,7 +273,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                 switch (modifier) {
                     case WATER_EARTH:
                         return new ModifierEntry(
-                                EntityAttributes.LUCK.getId(),
+                                EntityAttributes.GENERIC_LUCK,
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.LUCK,
                                         "Fortune",
@@ -281,12 +282,12 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
                                 getEquipmentSlot(item));
 
                 }
-            } else if (item instanceof ITrinket) {
+            } else if (item instanceof TrinketItem) {
                 // Trinket modifiers
                 switch (modifier) {
                     case WATER_WATER:
                         return new ModifierEntry(
-                                EntityAttributes.LUCK.getId(),
+                                EntityAttributes.GENERIC_LUCK,
                                 new EntityAttributeModifier(
                                         EntityAttributeModifiers.LUCK,
                                         "Luck",
@@ -392,8 +393,8 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
-    	super.fromTag(tag);
+    public void fromTag(BlockState state, CompoundTag tag) {
+    	super.fromTag(state, tag);
     	if(tag.contains("Slot1", 8)) {
     		slot1 = Registry.ITEM.get(new Identifier(tag.getString("Slot1")));
     	}
@@ -412,7 +413,7 @@ public class ComposingTableBlockEntity extends BlockEntity implements BlockEntit
 
 	@Override
 	public void fromClientTag(CompoundTag tag) {
-		fromTag(tag);
+		fromTag(world.getBlockState(pos), tag);
 	}
 
 	@Override

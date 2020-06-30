@@ -19,6 +19,6 @@ public class ItemStackEAMMixin {
 
     @Redirect(method="getAttributeModifiers", at=@At(value="INVOKE", target="Lcom/google/common/collect/HashMultimap;create()Lcom/google/common/collect/HashMultimap;"))
     public HashMultimap getItemModifiers(EquipmentSlot slot) {
-        return (HashMultimap) this.getItem().getModifiers(slot);
+        return (HashMultimap) this.getItem().getAttributeModifiers(slot);
     }
 }

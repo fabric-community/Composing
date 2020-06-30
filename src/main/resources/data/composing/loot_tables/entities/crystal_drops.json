@@ -12,8 +12,8 @@
       "conditions": [
         {
           "condition": "random_chance_with_looting",
-          "chance": 0.01,
-          "looting_multiplier": 0.005
+          "chance": 0.0001,
+          "looting_multiplier": 0.00005
         },
         {
           "condition": "killed_by_player"
@@ -22,7 +22,7 @@
       "entries": [
         {
           "type": "tag",
-          "weight": 20,
+          "weight": 100,
           "name": "composing:small_crystals",
           "expand": true
         },
@@ -34,23 +34,23 @@
         },
         {
           "type": "tag",
-          "weight": 5,
+          "weight": 1,
           "name": "composing:large_crystals",
           "expand": true
         },
         {
           "type": "item",
-          "weight": 15,
+          "weight": 75,
           "name": "composing:blessing_stone"
         },
         {
           "type": "item",
-          "weight": 8,
+          "weight": 7,
           "name": "composing:soul_stone"
         },
         {
           "type": "item",
-          "weight": 3,
+          "weight": 1,
           "name": "composing:holy_stone"
         }
       ]
