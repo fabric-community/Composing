@@ -3,6 +3,8 @@ package io.teamblue.composing.mixin;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,6 +21,8 @@ public class ItemStackEAMMixin {
 
     @Redirect(method="getAttributeModifiers", at=@At(value="INVOKE", target="Lcom/google/common/collect/HashMultimap;create()Lcom/google/common/collect/HashMultimap;"))
     public HashMultimap getItemModifiers(EquipmentSlot slot) {
-        return (HashMultimap) this.getItem().getAttributeModifiers(slot);
+        HashMultimap<EntityAttribute, EntityAttributeModifier> map = HashMultimap.create();
+        map.putAll(this.getItem().getAttributeModifiers(slot));
+        return map;
     }
 }

@@ -24,13 +24,15 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
+import java.util.Arrays;
+
 public class ComposingTableBlock extends BlockWithEntity {
     public static final DirectionProperty FACING = Properties.FACING;
 
-    private double[] slot1Area = new double[] { 0, 0.33, 0.33, 0.66 };
-    private double[] slot2Area = new double[] { 0.33, 0, 0.66, 0.33 };
-    private double[] slot3Area = new double[] { 0.66, 0.33, 1, 0.66};
-    private double[] centerArea = new double[] { 0.33, 0.33, 0.66, 0.66 };
+    private double[] slot1Area = new double[] { -0.5, -0.17, -0.17, 0.17 };
+    private double[] slot2Area = new double[] { -0.17, -0.5, 0.17, -0.17 };
+    private double[] slot3Area = new double[] { 0.17, -0.17, 0.5, 0.17};
+    private double[] centerArea = new double[] { -0.17, -0.17, 0.17, 0.17 };
 
     protected ComposingTableBlock() {
         super(Settings.of(Material.STONE).strength(2.0f, 6.0f));
@@ -85,6 +87,7 @@ public class ComposingTableBlock extends BlockWithEntity {
                 if (player.isSneaking()) {
                     if (!be.tool.isEmpty()) {
                         givePlayerStack(world, player, hand, hit, pos, be.tool.copy());
+                        be.tool = ItemStack.EMPTY;
                     }
                 } else  {
                     if (be.tool.isEmpty() && validComposeItem(playerItemStack)) {
