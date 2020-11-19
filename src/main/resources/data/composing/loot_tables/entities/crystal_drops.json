@@ -22,7 +22,7 @@
       "entries": [
         {
           "type": "tag",
-          "weight": 100,
+          "weight": 20,
           "name": "composing:small_crystals",
           "expand": true
         },
@@ -34,23 +34,23 @@
         },
         {
           "type": "tag",
-          "weight": 1,
+          "weight": 5,
           "name": "composing:large_crystals",
           "expand": true
         },
         {
           "type": "item",
-          "weight": 75,
+          "weight": 15,
           "name": "composing:blessing_stone"
         },
         {
           "type": "item",
-          "weight": 7,
+          "weight": 8,
           "name": "composing:soul_stone"
         },
         {
           "type": "item",
-          "weight": 1,
+          "weight": 3,
           "name": "composing:holy_stone"
         }
       ]
