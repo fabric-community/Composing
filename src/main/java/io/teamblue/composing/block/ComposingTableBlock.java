@@ -68,13 +68,13 @@ public class ComposingTableBlock extends BlockWithEntity {
 
             switch (state.get(FACING)) {
                 case WEST:
-                    hitPos = new Vec3d(1 - hitPos.getZ(), hitPos.getY(), hitPos.getX());
+                    hitPos = new Vec3d(- hitPos.getZ(), hitPos.getY(), hitPos.getX());
                     break;
                 case SOUTH:
-                    hitPos = new Vec3d(1 - hitPos.getX(), hitPos.getY(), 1 - hitPos.getZ());
+                    hitPos = new Vec3d(- hitPos.getX(), hitPos.getY(), - hitPos.getZ());
                     break;
                 case EAST:
-                    hitPos = new Vec3d(hitPos.getZ(), hitPos.getY(), 1 - hitPos.getX());
+                    hitPos = new Vec3d(hitPos.getZ(), hitPos.getY(), - hitPos.getX());
                     break;
             }
 
