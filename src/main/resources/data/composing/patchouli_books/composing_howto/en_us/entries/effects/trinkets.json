@@ -9,9 +9,9 @@
     },
     {
       "type": "composing",
-      "slot1": "composing:small_water_crystal,composing:medium_water_crystal,composing:large_water_crystal,composing:large_water_crystal",
-      "slot2": "composing:blessing_stone,composing:blessing_stone,composing:soul_stone,composing:holy_stone",
-      "slot3": "composing:small_water_crystal,composing:medium_water_crystal,composing:large_water_crystal,composing:large_water_crystal",
+      "slot1": ["composing:small_water_crystal","composing:medium_water_crystal","composing:large_water_crystal","composing:large_water_crystal"],
+      "slot2": ["composing:blessing_stone","composing:blessing_stone","composing:soul_stone","composing:holy_stone"],
+      "slot3": ["composing:small_water_crystal","composing:medium_water_crystal","composing:large_water_crystal","composing:large_water_crystal"],
       "center": "minecraft:gold_ingot",
       "text": "Luck (n)"
     }
