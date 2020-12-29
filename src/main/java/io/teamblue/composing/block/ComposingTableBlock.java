@@ -27,7 +27,7 @@ import net.minecraft.world.WorldAccess;
 import java.util.Arrays;
 
 public class ComposingTableBlock extends BlockWithEntity {
-    public static final DirectionProperty FACING = Properties.FACING;
+    public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
     private double[] slot1Area = new double[] { -0.5, -0.17, -0.17, 0.17 };
     private double[] slot2Area = new double[] { -0.17, -0.5, 0.17, -0.17 };
